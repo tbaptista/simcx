@@ -1,7 +1,8 @@
-SimX -- Simulator for Complex Systems
+SimCX -- Simulator for Complex Systems
 ===================================================
 
-SimX is ...
+Simulator for Complex Systems. Developed for the course in Complex Systems from
+the Department of Informatics Engineering of the University of Coimbra.
 
 | Copyright (c) 2015 Tiago Baptista - baptista@dei.uc.pt
 | All rights reserved.
