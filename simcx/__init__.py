@@ -70,18 +70,18 @@ class Display(pyglet.window.Window):
         self.clear()
 
         #draw simulator
-        self.draw_plot()
+        self._draw_plot()
 
         #draw gui
-        self.draw_gui()
+        self._draw_gui()
 
-    def draw_gui(self):
+    def _draw_gui(self):
         pass
 
-    def draw_plot(self):
+    def _draw_plot(self):
         self.image.blit(0,0)
 
-    def update_image(self):
+    def _update_image(self):
         self.sim.draw()
         data = io.BytesIO()
         self._canvas.print_raw(data, dpi=self.sim.dpi)
@@ -92,6 +92,6 @@ class Display(pyglet.window.Window):
 
         if symbol == key.S:
             self.sim.step()
-            self.update_image()
+            self._update_image()
 
 
