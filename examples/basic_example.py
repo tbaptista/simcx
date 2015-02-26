@@ -18,7 +18,6 @@ import sys
 sys.path.insert(1,'..')
 
 import simcx
-import pyglet
 
 class SimpleFunction(simcx.Simulator):
     def __init__(self):
@@ -44,8 +43,6 @@ class SimpleFunction(simcx.Simulator):
         self.l.set_data(self.x, self.y)
 
 
-
 if __name__ == '__main__':
-    sim = SimpleFunction()
-    display = simcx.Display(sim)
-    pyglet.app.run()
+    display = simcx.Display(SimpleFunction)
+    simcx.run()

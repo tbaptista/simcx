@@ -54,16 +54,21 @@ class Simulator(object):
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, simulator):
-        super().__init__(simulator.width, simulator.height,
+    def __init__(self, sim_type, *args):
+        self.sim_type = sim_type
+        self.args = args
+        self.sim = sim_type(*args)
+        super().__init__(self.sim.width, self.sim.height,
                          caption = 'Complex Systems')
-        self.sim = simulator
-        self._canvas = FigureCanvas(simulator.figure)
+        self._create_canvas()
+
+    def _create_canvas(self):
+        self._canvas = FigureCanvas(self.sim.figure)
         data = io.BytesIO()
-        self._canvas.print_raw(data, dpi=simulator.dpi)
-        self.image = pyglet.image.ImageData(simulator.width, simulator.height,
+        self._canvas.print_raw(data, dpi=self.sim.dpi)
+        self.image = pyglet.image.ImageData(self.sim.width, self.sim.height,
                                             'RGBA', data.getvalue(),
-                                            -4 * simulator.width)
+                                            -4 * self.sim.width)
 
     def on_draw(self):
         #clear window
@@ -93,5 +98,12 @@ class Display(pyglet.window.Window):
         if symbol == key.S:
             self.sim.step()
             self._update_image()
+
+        elif symbol == key.R:
+            self.sim = self.sim_type(*self.args)
+            self._create_canvas()
+
+def run():
+    pyglet.app.run()
 
 
