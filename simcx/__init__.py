@@ -32,9 +32,10 @@ except ImportError:
     print("Please install the pyglet package!")
     exit(1)
 
+
 class Simulator(object):
 
-    def __init__(self, width = 800, height = 600):
+    def __init__(self, width=800, height=600):
         self.width = width
         self.height = height
         self.dpi = 80
@@ -57,6 +58,9 @@ class Display(pyglet.window.Window):
                          caption = 'Complex Systems (paused)')
 
         self.paused = True
+        self.update_delta = 1 / 10.0
+        self.show_fps = False
+        self.fps_display = pyglet.clock.ClockDisplay()
 
         self._create_canvas()
 
@@ -78,6 +82,10 @@ class Display(pyglet.window.Window):
         #draw gui
         self._draw_gui()
 
+        #show fps
+        if self.show_fps:
+            self.fps_display.draw()
+
     def _draw_gui(self):
         pass
 
@@ -90,7 +98,7 @@ class Display(pyglet.window.Window):
         self._canvas.print_raw(data, dpi=self.sim.dpi)
         self.image.set_data('RGBA', -4 * self.sim.width, data.getvalue())
 
-    def _step_simulation(self, dt = None):
+    def _step_simulation(self, delta = None):
         self.sim.step()
         self._update_image()
 
@@ -99,7 +107,7 @@ class Display(pyglet.window.Window):
         self._create_canvas()
 
     def _start_simulation(self):
-        pyglet.clock.schedule_interval(self._step_simulation, 1/10.0)
+        pyglet.clock.schedule_interval(self._step_simulation, self.update_delta)
 
     def _pause_simulation(self):
         pyglet.clock.unschedule(self._step_simulation)
