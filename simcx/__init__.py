@@ -29,14 +29,6 @@ except ImportError:
     print("Please install the pyglet package!")
     exit(1)
 
-#Try to import the pyglet-gui package
-try:
-    import pyglet_gui
-except ImportError:
-    print("Please install the pyglet-gui package!")
-    exit(1)
-
-
 class Simulator(object):
 
     def __init__(self, width = 800, height = 600):

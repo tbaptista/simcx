@@ -10,8 +10,8 @@ the Department of Informatics Engineering of the University of Coimbra.
 Dependencies
 ------------
 - Python 3 (http://www.python.org) (should also work on Python 2.7)
-- pyglet (http://www.pyglet.org) (tested on version 1.2alpha1)
-- pyglet-gui (https://github.com/jorgecarleitao/pyglet-gui)
+- pyglet (http://www.pyglet.org)
+- matplotlib (http://www.matplotlib.org)
 
 Authors
 -------
