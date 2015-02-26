@@ -54,7 +54,10 @@ class Display(pyglet.window.Window):
         self.args = args
         self.sim = sim_type(*args)
         super().__init__(self.sim.width, self.sim.height,
-                         caption = 'Complex Systems')
+                         caption = 'Complex Systems (paused)')
+
+        self.paused = True
+
         self._create_canvas()
 
     def _create_canvas(self):
@@ -87,16 +90,41 @@ class Display(pyglet.window.Window):
         self._canvas.print_raw(data, dpi=self.sim.dpi)
         self.image.set_data('RGBA', -4 * self.sim.width, data.getvalue())
 
+    def _step_simulation(self, dt = None):
+        self.sim.step()
+        self._update_image()
+
+    def _reset_simulation(self):
+        self.sim = self.sim_type(*self.args)
+        self._create_canvas()
+
+    def _start_simulation(self):
+        pyglet.clock.schedule_interval(self._step_simulation, 1/10.0)
+
+    def _pause_simulation(self):
+        pyglet.clock.unschedule(self._step_simulation)
+
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
 
         if symbol == key.S:
-            self.sim.step()
-            self._update_image()
+            if self.paused:
+                self._step_simulation()
 
         elif symbol == key.R:
-            self.sim = self.sim_type(*self.args)
-            self._create_canvas()
+            if self.paused:
+                self._reset_simulation()
+
+        elif symbol == key.SPACE:
+            if self.paused:
+                self._start_simulation()
+                self.paused = False
+                self.set_caption(self.caption.replace(" (paused)", ""))
+            else:
+                self._pause_simulation()
+                self.paused = True
+                self.set_caption(self.caption + " (paused)")
+
 
 def run():
     pyglet.app.run()
