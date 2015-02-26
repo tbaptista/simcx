@@ -1,1 +1,4 @@
 simcx/__pycache__
+build
+dist
+simcx.egg-info

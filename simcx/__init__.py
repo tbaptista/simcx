@@ -18,8 +18,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-import io
 
+try:
+    from io import BytesIO as StringIO
+except ImportError:
+    from cStringIO import StringIO
 
 #Try to import the pyglet package
 try:
@@ -56,7 +59,7 @@ class Display(pyglet.window.Window):
 
     def _create_canvas(self):
         self._canvas = FigureCanvas(self.sim.figure)
-        data = io.BytesIO()
+        data = StringIO()
         self._canvas.print_raw(data, dpi=self.sim.dpi)
         self.image = pyglet.image.ImageData(self.sim.width, self.sim.height,
                                             'RGBA', data.getvalue(),
@@ -80,7 +83,7 @@ class Display(pyglet.window.Window):
 
     def _update_image(self):
         self.sim.draw()
-        data = io.BytesIO()
+        data = StringIO()
         self._canvas.print_raw(data, dpi=self.sim.dpi)
         self.image.set_data('RGBA', -4 * self.sim.width, data.getvalue())
 
