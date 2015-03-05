@@ -34,7 +34,7 @@ class SimpleFunction(simcx.Simulator):
         self.l, = self.ax.plot(self.x, self.y)
 
     def step(self):
-        if (self.next_x < self.end_x):
+        if (self.next_x <= self.end_x):
             x = self.next_x
             self.next_x += self.step_size
             self.x.append(x)
