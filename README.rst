@@ -13,13 +13,12 @@ Dependencies
 - pyglet (http://www.pyglet.org)
 - matplotlib (http://www.matplotlib.org)
 
-Authors
--------
+Main Authors
+------------
 | Tiago Baptista
-
-Other Contributors
-------------------
 | Ernesto Costa
+
+
 
 
 
