@@ -1,11 +1,11 @@
-#coding: utf-8
-#-----------------------------------------------------------------------------
+# coding: utf-8
+# -----------------------------------------------------------------------------
 # Copyright (c) 2015 Tiago Baptista
 # All rights reserved.
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 """
-A simulation framework for complex systems modeling and analysis
+A simulation framework for complex systems modeling and analysis.
 """
 
 from __future__ import division
@@ -19,19 +19,12 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import numpy as np
+import pyglet
 
 try:
     from io import BytesIO as StringIO
 except ImportError:
     from cStringIO import StringIO
-
-# Try to import the pyglet package
-try:
-    import pyglet
-    from pyglet.window import key
-except ImportError:
-    print("Please install the pyglet package!")
-    exit(1)
 
 
 class Simulator(object):
@@ -40,7 +33,8 @@ class Simulator(object):
         self.height = height
         self.dpi = 80
         self.step_size = 1.0
-        self.figure = plt.figure(figsize=(width/self.dpi, height/self.dpi), dpi=self.dpi)
+        self.figure = plt.figure(figsize=(width/self.dpi, height/self.dpi),
+                                 dpi=self.dpi)
 
     def step(self):
         pass
@@ -55,7 +49,7 @@ class Display(pyglet.window.Window):
         self.args = args
         self.sim = sim_type(*args, **kwargs)
         super().__init__(self.sim.width, self.sim.height,
-                         caption = 'Complex Systems (paused)')
+                         caption='Complex Systems (paused)')
 
         self.paused = True
         self.update_delta = 1 / 10.0
@@ -73,16 +67,16 @@ class Display(pyglet.window.Window):
                                             -4 * self.sim.width)
 
     def on_draw(self):
-        #clear window
+        # clear window
         self.clear()
 
-        #draw simulator
+        # draw simulator
         self._draw_plot()
 
-        #draw gui
+        # draw gui
         self._draw_gui()
 
-        #show fps
+        # show fps
         if self.show_fps:
             self.fps_display.draw()
 
@@ -90,7 +84,7 @@ class Display(pyglet.window.Window):
         pass
 
     def _draw_plot(self):
-        self.image.blit(0,0)
+        self.image.blit(0, 0)
 
     def _update_image(self):
         self.sim.draw()
@@ -98,7 +92,7 @@ class Display(pyglet.window.Window):
         self._canvas.print_raw(data, dpi=self.sim.dpi)
         self.image.set_data('RGBA', -4 * self.sim.width, data.getvalue())
 
-    def _step_simulation(self, delta = None):
+    def _step_simulation(self, delta=None):
         self.sim.step()
         self._update_image()
 
@@ -113,17 +107,17 @@ class Display(pyglet.window.Window):
         pyglet.clock.unschedule(self._step_simulation)
 
     def on_key_press(self, symbol, modifiers):
-        super().on_key_press(symbol, modifiers)
+        super(Display, self).on_key_press(symbol, modifiers)
 
-        if symbol == key.S:
+        if symbol == pyglet.window.key.S:
             if self.paused:
                 self._step_simulation()
 
-        elif symbol == key.R:
+        elif symbol == pyglet.window.key.R:
             if self.paused:
                 self._reset_simulation()
 
-        elif symbol == key.SPACE:
+        elif symbol == pyglet.window.key.SPACE:
             if self.paused:
                 self._start_simulation()
                 self.paused = False
@@ -165,7 +159,6 @@ class Trajectory(Simulator):
         if grid:
             self.ax.grid()
 
-
     def step(self):
         for i in range(len(self._state)):
             self._state[i] = self._func(self._state[i])
@@ -184,7 +177,7 @@ class Cobweb(Simulator):
     """ Class to build and display the cobwed diagram of a 1D system."""
 
     def __init__(self, func, initial_states, min, max, func_string='',
-                 legend = True):
+                 legend=True):
         super(Cobweb, self).__init__()
 
         self._func = func
@@ -233,3 +226,47 @@ class Cobweb(Simulator):
 
         self.ax.set_title('t = ' + str(self._t))
 
+
+class BifurcationDiagram(Simulator):
+    def __init__(self, x_0, start=1000, end_samples=250, dr=0.01,
+                 start_r=0, end_r=4.0):
+        super(BifurcationDiagram, self).__init__()
+
+        self._start = start
+        self._end = end_samples
+        self._dr = dr
+        self._start_r = start_r
+        self._end_r = end_r
+        self._r = start_r
+        self._x_0 = x_0
+        self._x = []
+        self._y = []
+
+        self.ax = self.figure.add_subplot(111)
+        self.ax.set_title('Bifurcation Diagram for the Logistic equation')
+        self.ax.set_xlabel('r (' + str(start_r) + ')')
+        self.ax.set_ylabel('Final Value(s)')
+        self.ax.set_xlim(start_r, end_r)
+        self.ax.set_ylim(0, 1)
+
+    @staticmethod
+    def logistic(r, x):
+        return r * x * (1 - x)
+
+    def step(self):
+        if self._r <= self._end_r:
+            r = self._r
+            x = self._x_0
+            for t in range(self._start):
+                x = BifurcationDiagram.logistic(r, x)
+            self._x = []
+            self._y = []
+            for t in range(self._end):
+                x = BifurcationDiagram.logistic(r, x)
+                self._x.append(r)
+                self._y.append(x)
+            self._r += self._dr
+
+    def draw(self):
+        self.ax.scatter(self._x, self._y, s=0.5, c='black')
+        self.ax.set_xlabel('r (' + str(self._r-self._dr) + ')')
