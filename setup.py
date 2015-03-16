@@ -5,6 +5,7 @@
 #-----------------------------------------------------------------------------
 
 from setuptools import setup
+from io import open
 
 with open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
@@ -22,6 +23,6 @@ setup(
     author='Tiago Baptista',
     author_email='baptista@dei.uc.pt',
     packages=['simcx'],
-    install_requires = ['pyglet', 'matplotlib'],
+    install_requires = ['pyglet', 'matplotlib', 'numpy'],
     license='LICENSE.txt'
 )

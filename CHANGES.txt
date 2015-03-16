@@ -1,3 +1,6 @@
+v1.0b3, 2015-03-15
+    * Add simulator classes to plot trajectories and cobweb diagrams.
+
 v1.0b2, 2015-03-05
     * Add the possibility to continuously step the simulation.
 
