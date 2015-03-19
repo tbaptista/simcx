@@ -1,3 +1,6 @@
+v1.0b4, 2015-03-19
+    * Add simulator class to draw bifurcation diagrams for the logistic equation.
+
 v1.0b3, 2015-03-15
     * Add simulator classes to plot trajectories and cobweb diagrams.
 
