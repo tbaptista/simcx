@@ -22,7 +22,9 @@ sys.path.insert(1,'..')
 import simcx
 
 if __name__ == '__main__':
-    display = simcx.Display(simcx.BifurcationDiagram, 0.01)
-    #display = simcx.Display(simcx.BifurcationDiagram, 0.01,
-    #                        start_r=3.5, end_r=3.8, dr=0.001)
+    sim = simcx.BifurcationDiagram(0.01)
+    # sim = simcx.BifurcationDiagram(0.01, start_r=3.5, end_r=3.8, dr=0.001)
+    display = simcx.Display()
+    display.add_simulator(sim)
+
     simcx.run()

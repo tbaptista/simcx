@@ -38,6 +38,8 @@ class RandomParticles(simcx.Simulator):
         self.ax.set_xlim(-4, 4)
         self.ax.set_ylim(-4, 4)
 
+        self.update_image()
+
     def step(self):
         for i in range(self.n):
             self.x[i] += np.random.normal(0, self.sd)
@@ -47,7 +49,9 @@ class RandomParticles(simcx.Simulator):
         self.p.set_data(self.x, self.y)
 
 if __name__ == '__main__':
-    simcx.Display(RandomParticles)
+    sim = RandomParticles()
+    display = simcx.Display()
+    display.add_simulator(sim)
     simcx.run()
 
 

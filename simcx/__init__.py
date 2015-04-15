@@ -18,6 +18,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.transforms import Affine2D
 import numpy as np
 import pyglet
 
@@ -28,53 +29,75 @@ except ImportError:
 
 
 class Simulator(object):
-    def __init__(self, width=800, height=600):
+    def __init__(self, width=500, height=500, use_mpl=True):
         self.width = width
         self.height = height
-        self.dpi = 80
-        self.step_size = 1.0
-        self.figure = plt.figure(figsize=(width/self.dpi, height/self.dpi),
-                                 dpi=self.dpi)
+        self.use_mpl = use_mpl
+        if use_mpl:
+            self.dpi = 80
+            self.figure = plt.figure(figsize=(width/self.dpi, height/self.dpi),
+                                     dpi=self.dpi)
+            self._create_canvas()
 
     def step(self):
-        pass
+        assert False, "Not implemented!"
+
+    def reset(self):
+        assert False, "Not implemented"
 
     def draw(self):
-        pass
+        assert False, "Not implemented"
+
+    def _create_canvas(self):
+        self.canvas = FigureCanvas(self.figure)
+        data = StringIO()
+        self.canvas.print_raw(data, dpi=self.dpi)
+        self.image = pyglet.image.ImageData(self.width, self.height,
+                                            'RGBA', data.getvalue(),
+                                            -4 * self.width)
+
+    def update_image(self):
+        data = StringIO()
+        self.canvas.print_raw(data, dpi=self.dpi)
+        self.image.set_data('RGBA', -4 * self.width, data.getvalue())
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, sim_type, *args, **kwargs):
-        self.sim_type = sim_type
-        self.args = args
-        self.sim = sim_type(*args, **kwargs)
-        super().__init__(self.sim.width, self.sim.height,
+    def __init__(self, width=500, height=500):
+        super().__init__(width, height,
                          caption='Complex Systems (paused)')
 
         self.paused = True
-        self.update_delta = 1 / 10.0
+        self.update_delta = 1 / 25.0
         self.show_fps = False
         self.fps_display = pyglet.clock.ClockDisplay()
+        self._sims = []
+        self._pos = []
 
-        self._create_canvas()
+    def add_simulator(self, sim, x=0, y=0):
+        if sim not in self._sims:
+            self._sims.append(sim)
+            self._pos.append((x, y))
 
-    def _create_canvas(self):
-        self._canvas = FigureCanvas(self.sim.figure)
-        data = StringIO()
-        self._canvas.print_raw(data, dpi=self.sim.dpi)
-        self.image = pyglet.image.ImageData(self.sim.width, self.sim.height,
-                                            'RGBA', data.getvalue(),
-                                            -4 * self.sim.width)
+            self._resize_window()
 
     def on_draw(self):
         # clear window
         self.clear()
 
-        # draw simulator
-        self._draw_plot()
+        # draw sims
+        for i in range(len(self._sims)):
+            sim = self._sims[i]
+            if sim.use_mpl:
+                sim.image.blit(*self._pos[i])
+            else:
+                pyglet.gl.glPushMatrix()
+                pyglet.gl.glTranslatef(self._pos[i][0], self._pos[i][1], 0)
+                sim.draw()
+                pyglet.gl.glPopMatrix()
 
         # draw gui
-        self._draw_gui()
+        # self._draw_gui()
 
         # show fps
         if self.show_fps:
@@ -83,28 +106,35 @@ class Display(pyglet.window.Window):
     def _draw_gui(self):
         pass
 
-    def _draw_plot(self):
-        self.image.blit(0, 0)
-
-    def _update_image(self):
-        self.sim.draw()
-        data = StringIO()
-        self._canvas.print_raw(data, dpi=self.sim.dpi)
-        self.image.set_data('RGBA', -4 * self.sim.width, data.getvalue())
-
-    def _step_simulation(self, delta=None):
-        self.sim.step()
-        self._update_image()
+    def _step_simulation(self, delta=None, *args, **kwargs):
+        for sim in self._sims:
+            sim.step()
+            if sim.use_mpl:
+                sim.draw()
+                sim.update_image()
 
     def _reset_simulation(self):
-        self.sim = self.sim_type(*self.args)
-        self._create_canvas()
+        for sim in self._sims:
+            sim.reset()
 
     def _start_simulation(self):
         pyglet.clock.schedule_interval(self._step_simulation, self.update_delta)
 
     def _pause_simulation(self):
         pyglet.clock.unschedule(self._step_simulation)
+
+    def _resize_window(self):
+        max_x = 0
+        max_y = 0
+        for i in range(len(self._sims)):
+            if self._pos[i][0] + self._sims[i].width > max_x:
+                max_x = self._pos[i][0] + self._sims[i].width
+            if self._pos[i][1] + self._sims[i].height > max_y:
+                max_y = self._pos[i][1] + self._sims[i].height
+
+        if max_x != self.width or max_y != self.height:
+            self.set_size(max_x, max_y)
+            self.clear()
 
     def on_key_press(self, symbol, modifiers):
         super(Display, self).on_key_press(symbol, modifiers)
@@ -126,6 +156,8 @@ class Display(pyglet.window.Window):
                 self._pause_simulation()
                 self.paused = True
                 self.set_caption(self.caption + " (paused)")
+        elif symbol == pyglet.window.key.F:
+            self.show_fps = not self.show_fps
 
 
 def run():
@@ -136,8 +168,9 @@ class Trajectory(Simulator):
     """ Class to build and display the trajectory of a 1D, linear, first-order.
     autonomous system."""
 
-    def __init__(self, func, initial_states, func_string='', grid=False):
-        super(Trajectory, self).__init__()
+    def __init__(self, func, initial_states, func_string='', grid=False,
+                 **kwargs):
+        super(Trajectory, self).__init__(**kwargs)
 
         self._state = [x for x in initial_states]
         self._func = func
@@ -159,6 +192,8 @@ class Trajectory(Simulator):
         if grid:
             self.ax.grid()
 
+        self.update_image()
+
     def step(self):
         for i in range(len(self._state)):
             self._state[i] = self._func(self._state[i])
@@ -177,8 +212,8 @@ class Cobweb(Simulator):
     """ Class to build and display the cobwed diagram of a 1D system."""
 
     def __init__(self, func, initial_states, min, max, func_string='',
-                 legend=True):
-        super(Cobweb, self).__init__()
+                 legend=True, **kwargs):
+        super(Cobweb, self).__init__(**kwargs)
 
         self._func = func
         self._t = 0
@@ -210,6 +245,8 @@ class Cobweb(Simulator):
         if legend:
             self.ax.legend()
 
+        self.update_image()
+
     def step(self):
         for i in range(len(self._states)):
             self._cobx[i].append(self._states[i])
@@ -239,8 +276,8 @@ class BifurcationDiagram(Simulator):
         self._end_r = end_r
         self._r = start_r
         self._x_0 = x_0
-        self._x = []
-        self._y = []
+        self._x = set()
+        self._y = set()
 
         self.ax = self.figure.add_subplot(111)
         self.ax.set_title('Bifurcation Diagram for the Logistic equation')
@@ -248,6 +285,8 @@ class BifurcationDiagram(Simulator):
         self.ax.set_ylabel('Final Value(s)')
         self.ax.set_xlim(start_r, end_r)
         self.ax.set_ylim(0, 1)
+
+        self.update_image()
 
     @staticmethod
     def logistic(r, x):
@@ -259,14 +298,52 @@ class BifurcationDiagram(Simulator):
             x = self._x_0
             for t in range(self._start):
                 x = BifurcationDiagram.logistic(r, x)
-            self._x = []
-            self._y = []
+            self._y = set()
             for t in range(self._end):
                 x = BifurcationDiagram.logistic(r, x)
-                self._x.append(r)
-                self._y.append(x)
+                self._y.add(x)
+            self._x = [r] * len(self._y)
+            self._y = list(self._y)
             self._r += self._dr
 
     def draw(self):
         self.ax.scatter(self._x, self._y, s=0.5, c='black')
         self.ax.set_xlabel('r (' + str(self._r-self._dr) + ')')
+
+
+class IFS(Simulator):
+    """A random Iterated Function System simulator."""
+
+    def __init__(self, transforms, probs,
+                 width=500, height=500, step_size=100):
+        super(IFS, self).__init__(width, height, use_mpl=False)
+
+        self._discard = 10
+        self._step_size = step_size
+        self._transforms = transforms[:]
+        self._n = len(transforms)
+        self._probs = probs[:]
+        self._screen_transform = Affine2D().scale(width, height)
+
+        self._point = np.array((0.0, 0.0))
+
+        for i in range(self._discard):
+            self.step(False)
+
+        self.batch = pyglet.graphics.Batch()
+
+    def get_random_transform(self):
+        i = np.random.choice(self._n, p=self._probs)
+        return self._transforms[i]
+
+    def step(self, plot=True):
+        for i in range(self._step_size):
+            self._point = self.get_random_transform().transform_point(self._point)
+            if plot:
+                p = self._screen_transform.transform_point(self._point)
+                self.batch.add(1, pyglet.gl.GL_POINTS, None, ('v2f', p),
+                               ('c3B', (255, 255, 255)))
+
+    def draw(self):
+        self.batch.draw()
+

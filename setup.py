@@ -23,6 +23,6 @@ setup(
     author='Tiago Baptista',
     author_email='baptista@dei.uc.pt',
     packages=['simcx'],
-    install_requires = ['pyglet', 'matplotlib', 'numpy'],
+    install_requires = ['pyglet', 'matplotlib', 'numpy', 'scipy'],
     license='LICENSE.txt'
 )

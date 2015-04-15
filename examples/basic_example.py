@@ -19,6 +19,7 @@ sys.path.insert(1,'..')
 
 import simcx
 
+
 class SimpleFunction(simcx.Simulator):
     def __init__(self):
         super().__init__()
@@ -33,8 +34,10 @@ class SimpleFunction(simcx.Simulator):
         self.ax.set_ylim(-10,10)
         self.l, = self.ax.plot(self.x, self.y)
 
+        self.update_image()
+
     def step(self):
-        if (self.next_x <= self.end_x):
+        if self.next_x <= self.end_x:
             x = self.next_x
             self.next_x += self.step_size
             self.x.append(x)
@@ -45,6 +48,7 @@ class SimpleFunction(simcx.Simulator):
 
 
 if __name__ == '__main__':
-    display = simcx.Display(SimpleFunction)
-    display.show_fps = True
+    sim = SimpleFunction()
+    display = simcx.Display()
+    display.add_simulator(sim)
     simcx.run()
