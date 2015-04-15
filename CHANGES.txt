@@ -1,3 +1,10 @@
+v1.0b5, TBD
+    * Add the possibility to add several Simulator instances to one Display. Warning: API changed.
+    * F Key can be used to show or hide FPS display.
+    * New class to generate fractals using Iterated Function Systems.
+    * New example on the usage of IFS Simulator.
+    * New example with an implementation of the Game of Life (Cellular Automaton).
+
 v1.0b4, 2015-03-19
     * Add simulator class to draw bifurcation diagrams for the logistic equation.
 
