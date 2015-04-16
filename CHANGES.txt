@@ -1,6 +1,7 @@
-v1.0b5, TBD
+v1.0b5, 2015-04-16
     * Add the possibility to add several Simulator instances to one Display. Warning: API changed.
     * F Key can be used to show or hide FPS display.
+    * The step interval can now be configured on creation of the Display.
     * New class to generate fractals using Iterated Function Systems.
     * New example on the usage of IFS Simulator.
     * New example with an implementation of the Game of Life (Cellular Automaton).
