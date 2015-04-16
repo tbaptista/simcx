@@ -63,16 +63,19 @@ class Simulator(object):
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, width=500, height=500):
+    def __init__(self, width=500, height=500, interval=0.05):
         super().__init__(width, height,
                          caption='Complex Systems (paused)')
 
         self.paused = True
-        self.update_delta = 1 / 25.0
         self.show_fps = False
-        self.fps_display = pyglet.clock.ClockDisplay()
+        self._interval = interval
         self._sims = []
         self._pos = []
+
+        self._fps_display = pyglet.clock.ClockDisplay()
+
+        pyglet.clock.schedule_interval(self._step_simulation, self._interval)
 
     def add_simulator(self, sim, x=0, y=0):
         if sim not in self._sims:
@@ -101,27 +104,22 @@ class Display(pyglet.window.Window):
 
         # show fps
         if self.show_fps:
-            self.fps_display.draw()
+            self._fps_display.draw()
 
     def _draw_gui(self):
         pass
 
     def _step_simulation(self, delta=None, *args, **kwargs):
-        for sim in self._sims:
-            sim.step()
-            if sim.use_mpl:
-                sim.draw()
-                sim.update_image()
+        if not self.paused:
+            for sim in self._sims:
+                sim.step()
+                if sim.use_mpl:
+                    sim.draw()
+                    sim.update_image()
 
     def _reset_simulation(self):
         for sim in self._sims:
             sim.reset()
-
-    def _start_simulation(self):
-        pyglet.clock.schedule_interval(self._step_simulation, self.update_delta)
-
-    def _pause_simulation(self):
-        pyglet.clock.unschedule(self._step_simulation)
 
     def _resize_window(self):
         max_x = 0
@@ -149,11 +147,9 @@ class Display(pyglet.window.Window):
 
         elif symbol == pyglet.window.key.SPACE:
             if self.paused:
-                self._start_simulation()
                 self.paused = False
                 self.set_caption(self.caption.replace(" (paused)", ""))
             else:
-                self._pause_simulation()
                 self.paused = True
                 self.set_caption(self.caption + " (paused)")
         elif symbol == pyglet.window.key.F:

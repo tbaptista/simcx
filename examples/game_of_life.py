@@ -23,8 +23,12 @@ from scipy import signal
 import numpy as np
 import pyglet
 
+
 class GameOfLife(simcx.Simulator):
     """A Game of Life simulator."""
+
+    QUAD_BLACK = (0, 0, 0) * 4
+    QUAD_WHITE = (255, 255, 255) * 4
 
     def __init__(self, width=50, height=50, cell_size=20):
         super(GameOfLife, self).__init__(width * cell_size, height * cell_size,
@@ -46,8 +50,13 @@ class GameOfLife(simcx.Simulator):
                          x * cell_size + cell_size, y * cell_size,
                          x * cell_size + cell_size, y * cell_size + cell_size,
                          x * cell_size, y * cell_size + cell_size)),
-                ('c3B', (0, 0, 0) * 4))
+                ('c3B', GameOfLife.QUAD_BLACK))
                 self.grid[y].append(vertex_list)
+
+    def random(self, prob):
+        self.values = np.random.choice((0, 1), (self.grid_height, self.grid_width),
+                                       p=(1-prob, prob))
+        self._update_graphics()
 
     def add_block(self, block, pos_x, pos_y):
         height, width = block.shape
@@ -78,18 +87,19 @@ class GameOfLife(simcx.Simulator):
         for y in range(self.grid_height):
             for x in range(self.grid_width):
                 if self.values[y, x] == 1:
-                    self.grid[y][x].colors[:] = (255, 255, 255) * 4
+                    self.grid[y][x].colors[:] = GameOfLife.QUAD_WHITE
                 else:
-                    self.grid[y][x].colors[:] = (0, 0, 0) * 4
+                    self.grid[y][x].colors[:] = GameOfLife.QUAD_BLACK
 
 
 if __name__ == '__main__':
     # Example patterns
     glider = np.array([[0, 1, 0], [0, 0, 1], [1, 1, 1]])
 
-    gol = GameOfLife(30, 30, 20)
-    gol.add_block(glider, 10, 10)
+    gol = GameOfLife(50, 50, 10)
+    gol.random(0.2)
+    #gol.add_block(glider, 10, 10)
 
-    display = simcx.Display()
+    display = simcx.Display(interval=0.2)
     display.add_simulator(gol)
     simcx.run()
