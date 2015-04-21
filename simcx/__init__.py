@@ -43,10 +43,10 @@ class Simulator(object):
         assert False, "Not implemented!"
 
     def reset(self):
-        assert False, "Not implemented"
+        assert False, "Not implemented!"
 
     def draw(self):
-        assert False, "Not implemented"
+        assert False, "Not implemented!"
 
     def _create_canvas(self):
         self.canvas = FigureCanvas(self.figure)
@@ -75,7 +75,7 @@ class Display(pyglet.window.Window):
 
         self._fps_display = pyglet.clock.ClockDisplay()
 
-        pyglet.clock.schedule_interval(self._step_simulation, self._interval)
+        pyglet.clock.schedule_interval(self._update, self._interval)
 
     def add_simulator(self, sim, x=0, y=0):
         if sim not in self._sims:
@@ -109,13 +109,16 @@ class Display(pyglet.window.Window):
     def _draw_gui(self):
         pass
 
-    def _step_simulation(self, delta=None, *args, **kwargs):
+    def _update(self, dt):
         if not self.paused:
-            for sim in self._sims:
-                sim.step()
-                if sim.use_mpl:
-                    sim.draw()
-                    sim.update_image()
+            self._step_simulation()
+
+    def _step_simulation(self, dt=None):
+        for sim in self._sims:
+            sim.step()
+            if sim.use_mpl:
+                sim.draw()
+                sim.update_image()
 
     def _reset_simulation(self):
         for sim in self._sims:

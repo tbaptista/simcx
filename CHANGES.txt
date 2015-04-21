@@ -1,3 +1,6 @@
+v1.0b6, 2015-04-21
+    * Fix the step of simulations using the 'S' key. Broken in previous update.
+
 v1.0b5, 2015-04-16
     * Add the possibility to add several Simulator instances to one Display. Warning: API changed.
     * F Key can be used to show or hide FPS display.
