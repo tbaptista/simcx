@@ -27,9 +27,10 @@ class CA(simcx.Simulator):
     """Wolfram's elementary cellular automaton."""
 
     QUAD_WHITE = (255, 255, 255) * 4
+    QUAD_BLACK = (0, 0, 0) * 4
 
     def __init__(self, width=50, cell_size=20, rule=30):
-        super(CA, self).__init__(width * cell_size, width//2 * cell_size,
+        super(CA, self).__init__(width * cell_size, (width//2 + 1) * cell_size,
                                  use_mpl=False)
 
         self.size = width
@@ -43,6 +44,7 @@ class CA(simcx.Simulator):
         self._cell = cell_size
 
         # create graphics batch
+        pyglet.gl.glClearColor(1, 1, 1, 1) # Set background color to white
         self.batch = pyglet.graphics.Batch()
 
     def init_random(self, prob):
@@ -78,7 +80,7 @@ class CA(simcx.Simulator):
         return self._rule_template[i]
 
     def _update_graphics(self):
-        y = self._cur_step
+        y = self.size // 2 - self._cur_step
         for x in range(self.size):
             if self.values[x] == 1:
                 self.batch.add(4, pyglet.gl.GL_QUADS, None,
@@ -86,13 +88,16 @@ class CA(simcx.Simulator):
                          x * self._cell + self._cell, y * self._cell,
                          x * self._cell + self._cell, y * self._cell + self._cell,
                          x * self._cell, y * self._cell + self._cell)),
-                ('c3B', CA.QUAD_WHITE))
+                ('c3B', CA.QUAD_BLACK))
 
 
 if __name__ == '__main__':
-    ca30 = CA(100, 10, 30)
-    ca30.init_fixed()
+    display = simcx.Display(interval=0.2, visible=False)
 
-    display = simcx.Display(interval=0.2)
-    display.add_simulator(ca30)
+    ca126 = CA(101, 10, 126)
+    ca126.init_fixed()
+    display.add_simulator(ca126)
+
+    display.set_visible(True)
+
     simcx.run()
