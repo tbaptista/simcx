@@ -63,9 +63,9 @@ class Simulator(object):
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, width=500, height=500, interval=0.05):
+    def __init__(self, width=500, height=500, interval=0.05, **kwargs):
         super().__init__(width, height,
-                         caption='Complex Systems (paused)')
+                         caption='Complex Systems (paused)', **kwargs)
 
         self.paused = True
         self.show_fps = False
