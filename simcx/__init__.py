@@ -62,6 +62,22 @@ class Simulator(object):
         self.image.set_data('RGBA', -4 * self.width, data.getvalue())
 
 
+class PyafaiSimulator(Simulator):
+    def __init__(self, world):
+        super(PyafaiSimulator, self).__init__(world.width, world.height, use_mpl=False)
+
+        self.world = world
+        self.world.paused = False
+        pyglet.clock.unschedule(self.world._start_schedule)
+
+    def step(self):
+        self.world.update(0)
+
+    def draw(self):
+        self.world.draw()
+        self.world.draw_objects()
+
+
 class Display(pyglet.window.Window):
     def __init__(self, width=500, height=500, interval=0.05, **kwargs):
         super().__init__(width, height,
