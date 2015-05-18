@@ -34,7 +34,7 @@ class CA(simcx.Simulator):
                                  use_mpl=False)
 
         self.size = width
-        self.rule = 30
+        self.rule = rule
         self.values = np.zeros(width)
         self._next_values = np.zeros(width, dtype='uint8')
         self._cur_step = 0
@@ -62,7 +62,7 @@ class CA(simcx.Simulator):
     def step(self):
         for x in range(self.size):
             for i, dx in enumerate(self._nhood):
-                self._neighbours[-(i+1)] = self.values[(x + dx) % self.size]
+                self._neighbours[-(i+1)] = self.values[(x - dx) % self.size]
             self._next_values[x] = self._apply_rule(self._neighbours)
 
         temp = self.values
