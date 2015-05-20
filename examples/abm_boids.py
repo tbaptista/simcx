@@ -72,7 +72,7 @@ class BoidBody(pyafai.Object):
 
 
 class Boid(pyafai.Agent):
-    def __init__(self, x, y, angle, size=8, radius=250, color=('c3B', (200, 0, 0))):
+    def __init__(self, x, y, angle, size=8, radius=50, color=('c3B', (200, 0, 0))):
         super(Boid, self).__init__()
 
         # Create body
@@ -91,9 +91,9 @@ class Boid(pyafai.Agent):
         for ag in neighbours:
             v = self.body.pos - ag.body.pos
             d = np.linalg.norm(v)
-            if d > 0.0:
+            if 0 < d < self.size*3:
                 v /= d**2
-            s += v * self.size**2
+                s += v * self.size**2
 
         # Alignment
         a = np.zeros(2)
@@ -117,7 +117,7 @@ class Boid(pyafai.Agent):
         # Target
         t = self.world.target - self.body.pos
 
-        self.body.velocity += c * 0.005 + a * 0.01 + s * 0.05 + t * 0.005
+        self.body.velocity += c * 0.005 + a * 0.01 + s * 1 + t * 0.005
 
 
 class BoidsWorld(pyafai.World):
@@ -160,12 +160,12 @@ def setup(n):
     world.target = [400.0, 300.0]
 
     for i in range(n//2):
-        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0)
+        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=100)
         agent.body.velocity = np.random.uniform(10, 20, 2)
         world.add_agent(agent)
 
     for i in range(n//2):
-        agent = Boid(random.randint(900, 1000), random.randint(-100, 0), 0, color=('c3B', (0, 0, 200)))
+        agent = Boid(random.randint(900, 1000), random.randint(-100, 0), 0, color=('c3B', (0, 0, 200)), radius=50)
         agent.body.velocity = np.random.uniform(-10, -20, 2)
         world.add_agent(agent)
 
@@ -175,5 +175,5 @@ def setup(n):
     display.add_simulator(sim)
 
 if __name__ == '__main__':
-    setup(40)
+    setup(50)
     simcx.run()
