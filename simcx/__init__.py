@@ -39,7 +39,7 @@ class Simulator(object):
                                      dpi=self.dpi)
             self._create_canvas()
 
-    def step(self):
+    def step(self, delta=0):
         assert False, "Not implemented!"
 
     def reset(self):
@@ -63,15 +63,21 @@ class Simulator(object):
 
 
 class PyafaiSimulator(Simulator):
-    def __init__(self, world):
+    def __init__(self, world, width=500, height=500):
+        if not hasattr(world, 'width'):
+            world.width = width
+
+        if not hasattr(world, 'height'):
+            world.height = height
+
         super(PyafaiSimulator, self).__init__(world.width, world.height, use_mpl=False)
 
         self.world = world
         self.world.paused = False
         pyglet.clock.unschedule(self.world._start_schedule)
 
-    def step(self):
-        self.world.update(0)
+    def step(self, delta=0):
+        self.world.update(delta)
 
     def draw(self):
         self.world.draw()
@@ -79,9 +85,25 @@ class PyafaiSimulator(Simulator):
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, width=500, height=500, interval=0.05, **kwargs):
-        super().__init__(width, height,
-                         caption='Complex Systems (paused)', **kwargs)
+    def __init__(self, width=500, height=500, interval=0.05, multi_sampling=True, **kwargs):
+        if multi_sampling:
+            # Enable multi sampling if available on the hardware
+            platform = pyglet.window.get_platform()
+            display = platform.get_default_display()
+            screen = display.get_default_screen()
+            template = pyglet.gl.Config(sample_buffers=1, samples=4,
+                                        double_buffer=True)
+            try:
+                config = screen.get_best_config(template)
+            except pyglet.window.NoSuchConfigException:
+                template = pyglet.gl.Config()
+                config = screen.get_best_config(template)
+
+        if multi_sampling:
+            # Init the pyglet super class
+            super(Display, self).__init__(width, height, 'Complex Systems (paused)', config=config, **kwargs)
+        else:
+            super(Display, self).__init__(width, height, caption='Complex Systems (paused)', **kwargs)
 
         self.paused = True
         self.show_fps = False
@@ -127,11 +149,11 @@ class Display(pyglet.window.Window):
 
     def _update(self, dt):
         if not self.paused:
-            self._step_simulation()
+            self._step_simulation(dt)
 
     def _step_simulation(self, dt=None):
         for sim in self._sims:
-            sim.step()
+            sim.step(dt)
             if sim.use_mpl:
                 sim.draw()
                 sim.update_image()
@@ -158,7 +180,7 @@ class Display(pyglet.window.Window):
 
         if symbol == pyglet.window.key.S:
             if self.paused:
-                self._step_simulation()
+                self._step_simulation(self._interval)
 
         elif symbol == pyglet.window.key.R:
             if self.paused:
