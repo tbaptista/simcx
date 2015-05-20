@@ -125,6 +125,7 @@ class BoidsWorld(pyafai.World):
         super(BoidsWorld, self).__init__()
 
         self.kdt = None
+        self.positions = None
         self._target = np.array([250.0, 250.0])
 
         self._target_shape = pyafai.shapes.Rect(10, 10, self.target[0], self.target[1])
@@ -140,10 +141,16 @@ class BoidsWorld(pyafai.World):
         self._target[:] = v
         self._target_shape.vertexlist.vertices[:] = self._target_shape.translate(move[0], move[1])
 
-    def update(self, delta):
-        pos = np.array([[a.body.x, a.body.y] for a in self._agents])
-        self.kdt = cKDTree(pos)
+    def bind_array(self):
+        n = len(self._agents)
+        self.positions = np.zeros((n, 2))
+        P = self.positions
+        for i, a in enumerate(self._agents):
+            P[i][:] = a.body.pos
+            a.body.pos = P[i]
 
+    def update(self, delta):
+        self.kdt = cKDTree(self.positions)
         super(BoidsWorld, self).update(delta)
 
     def get_neighbours(self, agent, size):
@@ -160,7 +167,7 @@ def setup(n):
     world.target = [400.0, 300.0]
 
     for i in range(n//2):
-        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=100)
+        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=20)
         agent.body.velocity = np.random.uniform(10, 20, 2)
         world.add_agent(agent)
 
@@ -169,11 +176,12 @@ def setup(n):
         agent.body.velocity = np.random.uniform(-10, -20, 2)
         world.add_agent(agent)
 
+    world.bind_array()
     sim = simcx.PyafaiSimulator(world, width=800, height=600)
 
     display = simcx.Display(800, 600, interval=0.016)
     display.add_simulator(sim)
 
 if __name__ == '__main__':
-    setup(50)
+    setup(80)
     simcx.run()
