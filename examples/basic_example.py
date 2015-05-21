@@ -36,7 +36,7 @@ class SimpleFunction(simcx.Simulator):
 
         self.update_image()
 
-    def step(self):
+    def step(self, dt):
         if self.next_x <= self.end_x:
             x = self.next_x
             self.next_x += self.step_size

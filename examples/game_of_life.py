@@ -67,7 +67,7 @@ class GameOfLife(simcx.Simulator):
 
         self._update_graphics()
 
-    def step(self):
+    def step(self, dt):
         neighbours = signal.convolve2d(self.values, self.nhood, mode='same',
                                        boundary='wrap')
         for y in range(self.grid_height):

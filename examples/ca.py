@@ -59,7 +59,7 @@ class CA(simcx.Simulator):
         self._update_graphics()
         self._cur_step += 1
 
-    def step(self):
+    def step(self, dt):
         for x in range(self.size):
             for i, dx in enumerate(self._nhood):
                 self._neighbours[-(i+1)] = self.values[(x - dx) % self.size]

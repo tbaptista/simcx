@@ -231,7 +231,7 @@ class Trajectory(Simulator):
 
         self.update_image()
 
-    def step(self):
+    def step(self, dt):
         for i in range(len(self._state)):
             self._state[i] = self._func(self._state[i])
             self._trajectories[i].append(self._state[i])
@@ -284,7 +284,7 @@ class Cobweb(Simulator):
 
         self.update_image()
 
-    def step(self):
+    def step(self, dt):
         for i in range(len(self._states)):
             self._cobx[i].append(self._states[i])
             self._coby[i].append(self._states[i])
@@ -329,7 +329,7 @@ class BifurcationDiagram(Simulator):
     def logistic(r, x):
         return r * x * (1 - x)
 
-    def step(self):
+    def step(self, dt):
         if self._r <= self._end_r:
             r = self._r
             x = self._x_0
@@ -365,7 +365,7 @@ class IFS(Simulator):
         self._point = np.array((0.0, 0.0))
 
         for i in range(self._discard):
-            self.step(False)
+            self.step(0, False)
 
         self.batch = pyglet.graphics.Batch()
 
@@ -373,7 +373,7 @@ class IFS(Simulator):
         i = np.random.choice(self._n, p=self._probs)
         return self._transforms[i]
 
-    def step(self, plot=True):
+    def step(self, dt, plot=True):
         for i in range(self._step_size):
             self._point = self.get_random_transform().transform_point(self._point)
             if plot:
