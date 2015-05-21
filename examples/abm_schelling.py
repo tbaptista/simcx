@@ -153,7 +153,7 @@ class SegregationPlot(simcx.Simulator):
         self.l, = self.ax.plot(self.x, self.y)
         self.update_image()
 
-    def step(self):
+    def step(self, dt=None):
         self.x.append(self.x[-1] + 1)
         self.y.append(self.world.get_segregation() * 100)
 
