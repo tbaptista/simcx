@@ -19,6 +19,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.transforms import Affine2D
+from matplotlib import animation
+from matplotlib import verbose
 import numpy as np
 import pyglet
 
@@ -99,14 +101,16 @@ class Display(pyglet.window.Window):
                 template = pyglet.gl.Config()
                 config = screen.get_best_config(template)
 
-        if multi_sampling:
-            # Init the pyglet super class
             super(Display, self).__init__(width, height, 'Complex Systems (paused)', config=config, **kwargs)
         else:
             super(Display, self).__init__(width, height, caption='Complex Systems (paused)', **kwargs)
 
         self.paused = True
         self.show_fps = False
+        self.real_time = True
+        self._recording = False
+        self._movie_filename = 'simcx_movie.mp4'
+        self._movie_writer = None
         self._interval = interval
         self._sims = []
         self._pos = []
@@ -121,6 +125,19 @@ class Display(pyglet.window.Window):
             self._pos.append((x, y))
 
             self._resize_window()
+
+    def start_recording(self, filename, fps=None, bitrate=1800):
+        if self._movie_writer is None:
+            if fps is None:
+                fps = 1 // self._interval
+
+            self._movie_writer = FFMpegWriter(fps=fps, bitrate=bitrate)
+            self._movie_writer.setup(self, filename)
+            self._movie_writer.grab_frame()
+            self._recording = True
+            print("Recording started...")
+        else:
+            print("A movie is already being recorded for this Display.")
 
     def on_draw(self):
         # clear window
@@ -137,12 +154,39 @@ class Display(pyglet.window.Window):
                 sim.draw()
                 pyglet.gl.glPopMatrix()
 
-        # draw gui
-        # self._draw_gui()
-
         # show fps
         if self.show_fps:
             self._fps_display.draw()
+
+    def on_close(self):
+        if self._movie_writer is not None:
+            self._movie_writer.finish()
+
+        super(Display, self).on_close()
+
+    def on_key_press(self, symbol, modifiers):
+        super(Display, self).on_key_press(symbol, modifiers)
+
+        if symbol == pyglet.window.key.S:
+            if self.paused:
+                self._step_simulation(self._interval)
+
+        elif symbol == pyglet.window.key.R:
+            if pyglet.window.key.MOD_ALT & modifiers:
+                self.start_recording(self._movie_filename)
+            else:
+                if self.paused:
+                    self._reset_simulation()
+
+        elif symbol == pyglet.window.key.SPACE:
+            if self.paused:
+                self.paused = False
+                self.set_caption(self.caption.replace(" (paused)", ""))
+            else:
+                self.paused = True
+                self.set_caption(self.caption + " (paused)")
+        elif symbol == pyglet.window.key.F:
+            self.show_fps = not self.show_fps
 
     def _draw_gui(self):
         pass
@@ -152,11 +196,16 @@ class Display(pyglet.window.Window):
             self._step_simulation(dt)
 
     def _step_simulation(self, dt=None):
+        if not self.real_time:
+            dt = self._interval
+
         for sim in self._sims:
             sim.step(dt)
             if sim.use_mpl:
                 sim.draw()
                 sim.update_image()
+        if self._recording:
+            self._movie_writer.grab_frame()
 
     def _reset_simulation(self):
         for sim in self._sims:
@@ -175,26 +224,45 @@ class Display(pyglet.window.Window):
             self.set_size(max_x, max_y)
             self.clear()
 
-    def on_key_press(self, symbol, modifiers):
-        super(Display, self).on_key_press(symbol, modifiers)
 
-        if symbol == pyglet.window.key.S:
-            if self.paused:
-                self._step_simulation(self._interval)
+class FFMpegWriter(animation.FFMpegWriter):
+    @property
+    def frame_size(self):
+        """A tuple (width,height) in pixels of a movie frame."""
+        return self.display.width, self.display.height
 
-        elif symbol == pyglet.window.key.R:
-            if self.paused:
-                self._reset_simulation()
+    def setup(self, display, outfile):
+        """
+        Perform setup for writing the movie file.
+        display: `simcx.Display` instance
+            The Display instance whose framebuffer we want to use.
+        outfile: string
+            The filename of the resulting movie file
+        """
+        self.outfile = outfile
+        self.display = display
 
-        elif symbol == pyglet.window.key.SPACE:
-            if self.paused:
-                self.paused = False
-                self.set_caption(self.caption.replace(" (paused)", ""))
-            else:
-                self.paused = True
-                self.set_caption(self.caption + " (paused)")
-        elif symbol == pyglet.window.key.F:
-            self.show_fps = not self.show_fps
+        # Run here so that grab_frame() can write the data to a pipe. This
+        # eliminates the need for temp files.
+        self._run()
+
+    def grab_frame(self, **savefig_kwargs):
+        """
+        Grab the image information from the display and save as a movie frame.
+        The keyword arguments are not being used in the subclass.
+        """
+        verbose.report('MovieWriter.grab_frame: Grabbing frame.',
+                       level='debug')
+        try:
+            image = pyglet.image.get_buffer_manager().get_color_buffer().get_image_data()
+            self._frame_sink().write(image.get_data('RGBA', -4 * self.display.width))
+
+        except RuntimeError:
+            out, err = self._proc.communicate()
+            verbose.report('MovieWriter -- Error '
+                           'running proc:\n%s\n%s' % (out,
+                                                      err), level='helpful')
+            raise
 
 
 def run():
