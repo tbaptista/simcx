@@ -270,7 +270,7 @@ def run():
 
 
 class Trajectory(Simulator):
-    """ Class to build and display the trajectory of a 1D, linear, first-order.
+    """Class to build and display the trajectory of a 1D, linear, first-order,
     autonomous system."""
 
     def __init__(self, func, initial_states, func_string='', grid=False,
@@ -299,7 +299,7 @@ class Trajectory(Simulator):
 
         self.update_image()
 
-    def step(self, dt):
+    def step(self, delta=0):
         for i in range(len(self._state)):
             self._state[i] = self._func(self._state[i])
             self._trajectories[i].append(self._state[i])
@@ -309,6 +309,45 @@ class Trajectory(Simulator):
     def draw(self):
         for i in range(len(self._lines)):
             self._lines[i].set_data(self._time, self._trajectories[i])
+        self.ax.relim()
+        self.ax.autoscale_view()
+
+
+class TrajectoryDiff(Simulator):
+    """Class to build and display the difference between the trajectories of a
+    1D dynamic system, using two initial seeds."""
+
+    def __init__(self, func, seed1, seed2, func_string='', grid=False,
+                 **kwargs):
+        super(TrajectoryDiff, self).__init__(**kwargs)
+
+        self._state = [seed1, seed2]
+        self._func = func
+        self._trajectory = [abs(seed1 - seed2)]
+        self._time = [0]
+
+        self.ax = self.figure.add_subplot(111)
+        self.ax.set_title('Trajectory Difference for ' + func_string)
+        self.ax.set_xlabel('Time $t$')
+        self.ax.set_ylabel('$x_t$')
+        self._line, = self.ax.plot(self._time, self._trajectory, label='$x1_0=' + str(seed1) + '$ and $x2_0=' + str(seed2) + '$')
+        self.ax.legend()
+
+        if grid:
+            self.ax.grid()
+
+        self.update_image()
+
+    def step(self, delta=0):
+        for i in range(len(self._state)):
+            self._state[i] = self._func(self._state[i])
+
+        self._trajectory.append(abs(self._state[0] - self._state[1]))
+
+        self._time.append(self._time[-1] + 1)
+
+    def draw(self):
+        self._line.set_data(self._time, self._trajectory)
         self.ax.relim()
         self.ax.autoscale_view()
 
@@ -352,7 +391,7 @@ class Cobweb(Simulator):
 
         self.update_image()
 
-    def step(self, dt):
+    def step(self, delta=0):
         for i in range(len(self._states)):
             self._cobx[i].append(self._states[i])
             self._coby[i].append(self._states[i])
@@ -397,7 +436,7 @@ class BifurcationDiagram(Simulator):
     def logistic(r, x):
         return r * x * (1 - x)
 
-    def step(self, dt):
+    def step(self, delta=0):
         if self._r <= self._end_r:
             r = self._r
             x = self._x_0
@@ -441,7 +480,7 @@ class IFS(Simulator):
         i = np.random.choice(self._n, p=self._probs)
         return self._transforms[i]
 
-    def step(self, dt, plot=True):
+    def step(self, delta=0, plot=True):
         for i in range(self._step_size):
             self._point = self.get_random_transform().transform_point(self._point)
             if plot:

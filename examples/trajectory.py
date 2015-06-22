@@ -5,7 +5,8 @@
 # -----------------------------------------------------------------------------
 
 """
-Basic example of the use of the simcx framework to trajectories
+Basic example of the use of the simcx framework to plot trajectories of 1D
+dynamic systems.
 
 """
 
@@ -25,7 +26,10 @@ def sqrt(x):
     return x**0.5
 
 if __name__ == '__main__':
-    display = simcx.Display(simcx.Trajectory, sqrt,
-                            [0.2, 0.8, 1, 1.2, 1.8, 2, 3, 4],
-                            '$\sqrt{x}$', grid=True)
+    sim = simcx.Trajectory(sqrt, [0.2, 0.8, 1, 1.2, 1.8, 2, 3, 4], '$\sqrt{x}$',
+                           grid=True)
+    sim2 = simcx.TrajectoryDiff(sqrt, 0.2, 4, '$\sqrt{x}$', grid=True)
+    display = simcx.Display()
+    display.add_simulator(sim, 0, 500)
+    display.add_simulator(sim2)
     simcx.run()
