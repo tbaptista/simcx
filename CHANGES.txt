@@ -1,3 +1,16 @@
+v1.0b9, 2015-06-22
+    * Fixes for the new API of the step method.
+    * Add movie recording capabilities.
+    * Enable the toggle between real-time and computational time simulation.
+
+v1.0b8, 2015-05-20
+    * Add a Simulator class to enable the use of pyafai worlds in SimCX.
+    * Added a delta parameter to the Simulator.step method. Warning: API Change.
+
+
+v1.0b7, 2015-04-22
+    * Allow to pass keyword arguments from the Display initialization to the pyglet.Window initialization.
+
 v1.0b6, 2015-04-21
     * Fix the step of simulations using the 'S' key. Broken in previous update.
 
