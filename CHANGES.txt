@@ -1,3 +1,7 @@
+v1.0.0-beta.10
+    * Versioning scheme changed to Semantic Versioning 2.0.0.
+    * Licensed under Apache License 2.0
+
 v1.0b9, 2015-06-22
     * Add movie recording capabilities.
     * Enable the toggle between real-time and computational time simulation.
