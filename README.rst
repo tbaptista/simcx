@@ -14,6 +14,7 @@ Dependencies
 - Python 3 (http://www.python.org) (should also work on Python 2.7)
 - pyglet (http://www.pyglet.org)
 - matplotlib (http://www.matplotlib.org)
+- numpy (http://www.numpy.org)
 - pyafai (optional)
 
 The pyafai (Python Agent Framework for Artificial Intelligence) package is not
