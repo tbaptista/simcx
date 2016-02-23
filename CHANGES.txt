@@ -1,4 +1,9 @@
-v1.0.0-beta.10
+v1.0.0-beta.11, 2016-02-23
+    * Change the base architecture of the framework. Visuals are now a separate class. Warning: API changed.
+    * Update basic_example and random_particles examples to conform with new API.
+    * Waring: Not all examples have been updated to conform with new API.
+
+v1.0.0-beta.10, 2016-01-27
     * Versioning scheme changed to Semantic Versioning 2.0.0.
     * Licensed under Apache License 2.0
 
