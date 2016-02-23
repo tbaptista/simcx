@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 # -----------------------------------------------------------------------------
 # Copyright (c) 2015 Tiago Baptista
 #
@@ -37,15 +37,9 @@ class SimpleFunction(simcx.Simulator):
         self.next_x = -10.0
         self.end_x = 10.0
         self.step_size = 1
-        self.x = []
         self.f = lambda x: x
+        self.x = []
         self.y = []
-        self.ax = self.figure.add_subplot(111)
-        self.ax.set_xlim(-10,10)
-        self.ax.set_ylim(-10,10)
-        self.l, = self.ax.plot(self.x, self.y)
-
-        self.update_image()
 
     def step(self, dt):
         if self.next_x <= self.end_x:
@@ -54,12 +48,28 @@ class SimpleFunction(simcx.Simulator):
             self.x.append(x)
             self.y.append(self.f(x))
 
+    def reset(self):
+        self.x = []
+        self.y = []
+
+
+class PlotVisual(simcx.MplVisual):
+    def __init__(self, sim: SimpleFunction):
+        super(PlotVisual, self).__init__(sim)
+
+        self.ax = self.figure.add_subplot(111)
+        self.ax.set_xlim(-10,10)
+        self.ax.set_ylim(-10,10)
+        self.l, = self.ax.plot(self.sim.x, self.sim.y)
+
     def draw(self):
-        self.l.set_data(self.x, self.y)
+        self.l.set_data(self.sim.x, self.sim.y)
 
 
 if __name__ == '__main__':
     sim = SimpleFunction()
+    vis = PlotVisual(sim)
     display = simcx.Display()
     display.add_simulator(sim)
+    display.add_visual(vis)
     simcx.run()
