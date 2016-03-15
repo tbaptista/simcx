@@ -1,12 +1,13 @@
 # coding: utf-8
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015 Tiago Baptista
+# Copyright (c) 2015-2016 Tiago Baptista
 # All rights reserved.
 # -----------------------------------------------------------------------------
 
 """
-Basic example of the use of the simcx framework to plot cobweb diagrams. Also
-shows how to add several Simulator instances to the same Display.
+Basic example of the use of the simcx framework to plot the orbit of 1D
+dynamical systems.
+
 """
 
 from __future__ import division
@@ -20,12 +21,12 @@ def sqrt(x):
     return x**0.5
 
 if __name__ == '__main__':
-    sim_sqrt = simcx.simulators.FunctionIterator(sqrt, [0.2, 2])
-    cobweb = simcx.visuals.CobWebVisual(sim_sqrt, 0, 2.5, '$\sqrt{x}$', width=800,
-                                        height=400)
 
+    sim_sqrt = simcx.simulators.FunctionIterator(sqrt, [0.2, 0.8, 1.0, 1.2, 1.8, 2, 3, 4])
+    vis = simcx.visuals.LinesVisual(sim_sqrt)
 
     display = simcx.Display()
     display.add_simulator(sim_sqrt)
-    display.add_visual(cobweb)
+    display.add_visual(vis)
+
     simcx.run()

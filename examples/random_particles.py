@@ -44,7 +44,7 @@ class RandomParticles(simcx.Simulator):
         self.x = np.random.normal(0, 1, self.n)
         self.y = np.random.normal(0, 1, self.n)
 
-    def step(self, dt):
+    def step(self, delta=0):
         for i in range(self.n):
             self.x[i] += np.random.normal(0, self.sd)
             self.y[i] += np.random.normal(0, self.sd)

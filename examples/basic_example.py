@@ -16,17 +16,14 @@
 # -----------------------------------------------------------------------------
 
 """
-Basic example of the use of the simcx framework
+Basic example of the use of the simcx framework. In this example we use simcx to
+plot a function, step by step.
 """
 
 from __future__ import division
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
-
-#Allow the import of the framework from one directory down the hierarchy
-import sys
-sys.path.insert(1,'..')
 
 import simcx
 
@@ -41,7 +38,7 @@ class SimpleFunction(simcx.Simulator):
         self.x = []
         self.y = []
 
-    def step(self, dt):
+    def step(self, delta=0):
         if self.next_x <= self.end_x:
             x = self.next_x
             self.next_x += self.step_size

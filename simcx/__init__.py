@@ -22,23 +22,21 @@ A simulation framework for complex systems modeling and analysis.
 from __future__ import division
 from .__version__ import __version__
 
-__docformat__ = 'restructuredtext'
-__author__ = 'Tiago Baptista'
-
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.transforms import Affine2D
 from matplotlib import animation
 from matplotlib import verbose
-import numpy as np
 import pyglet
 
 try:
     from io import BytesIO as StringIO
 except ImportError:
     from cStringIO import StringIO
+
+__docformat__ = 'restructuredtext'
+__author__ = 'Tiago Baptista'
 
 
 class Simulator(object):
@@ -98,8 +96,9 @@ class MplVisual(Visual):
 
 
 class PyafaiVisual(Visual):
-    def __init__(self, sim: PyafaiSimulator):
+    def __init__(self, sim: PyafaiSimulator, width=500, height=500):
         self.world = sim.world
+
         if hasattr(self.world, 'width'):
             width = self.world.width
 
@@ -307,5 +306,9 @@ class FFMpegWriter(animation.FFMpegWriter):
 
 def run():
     pyglet.app.run()
+
+# import sub-modules
+from . import simulators
+from . import visuals
 
 
