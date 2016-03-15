@@ -16,7 +16,7 @@
 # -----------------------------------------------------------------------------
 
 """
-This module provides several ready-made visual classes. Used mainly for the
+This module provides several ready-made simulator classes. Used mainly for the
 examples given in the Complex Systems course. In this current version, these
 should not be considered stable in terms of API.
 
@@ -36,8 +36,10 @@ class FunctionIterator(Simulator):
         self.func = func
         self.x = [0]
         self.y = [[state] for state in initial_states]
+        self.time = 0
 
     def step(self, delta=0):
+        self.time += 1
         for i in range(len(self._state)):
             self._state[i] = self.func(self._state[i])
             self.y[i].append(self._state[i])

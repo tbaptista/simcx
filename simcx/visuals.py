@@ -82,7 +82,8 @@ class CobWebVisual(MplVisual):
         self._coby = [[0] for x in self.sim.y]
         self._cobweb_lines = []
         for i in range(len(self.sim.y)):
-            line, = self.ax.plot(self._cobx[i], self._coby[i], label='$x_0=' + str(self.sim.y[i][0]) + '$')
+            line, = self.ax.plot(self._cobx[i], self._coby[i],
+                                 label='$x_0=' + str(self.sim.y[i][0]) + '$')
             self._cobweb_lines.append(line)
 
     def draw(self):
@@ -93,3 +94,25 @@ class CobWebVisual(MplVisual):
             self._coby[i].append(self.sim.y[i][-1])
 
             self._cobweb_lines[i].set_data(self._cobx[i], self._coby[i])
+
+
+class FinalStateDiagram(MplVisual):
+    def __init__(self, sim: FunctionIterator, discard_initial=1000, **kwargs):
+        super(FinalStateDiagram, self).__init__(sim, **kwargs)
+
+        self._discard_initial = discard_initial
+        self._seeds = [y[0] for y in self.sim.y]
+
+        self.ax = self.figure.add_subplot(111)
+        self.ax.set_title('Final State Diagram')
+        xmin = min([y[0] for y in self.sim.y])
+        xmax = max([y[0] for y in self.sim.y])
+        self.ax.set_xlim(xmin - 0.5, xmax + 0.5)
+        self.ax.set_xlabel('$t={}$'.format(self.sim.time))
+        self.ax.set_ylabel('Final Value(s)')
+
+    def draw(self):
+        self.ax.set_xlabel('$t={}$'.format(self.sim.time))
+        if self.sim.time >= self._discard_initial:
+            for i in range(len(self.sim.y)):
+                self.ax.scatter([self._seeds[i]], self.sim.y[i][-1:], c='black')

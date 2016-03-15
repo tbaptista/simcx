@@ -24,7 +24,6 @@ if __name__ == '__main__':
     cobweb = simcx.visuals.CobWebVisual(sim_sqrt, 0, 2.5, '$\sqrt{x}$', width=800,
                                         height=400)
 
-
     display = simcx.Display()
     display.add_simulator(sim_sqrt)
     display.add_visual(cobweb)
