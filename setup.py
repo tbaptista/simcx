@@ -48,8 +48,6 @@ setup(
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Artificial Life',
-
-
     ],
     packages=['simcx'],
     install_requires = ['pyglet', 'matplotlib', 'numpy', 'scipy'],

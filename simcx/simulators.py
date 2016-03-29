@@ -18,7 +18,7 @@
 """
 This module provides several ready-made simulator classes. Used mainly for the
 examples given in the Complex Systems course. In this current version, these
-should not be considered stable in terms of API.
+should *not* be considered stable in terms of API.
 
 """
 
@@ -30,17 +30,37 @@ __author__ = 'Tiago Baptista'
 
 
 class FunctionIterator(Simulator):
-    def __init__(self, func, initial_states: list):
+    def __init__(self, func, initial_states):
         super(FunctionIterator, self).__init__()
         self._state = [state for state in initial_states]
+        self._n_states = len(self._state)
         self.func = func
+        self.time = 0
         self.x = [0]
         self.y = [[state] for state in initial_states]
-        self.time = 0
 
     def step(self, delta=0):
         self.time += 1
-        for i in range(len(self._state)):
+        for i in range(self._n_states):
             self._state[i] = self.func(self._state[i])
             self.y[i].append(self._state[i])
-        self.x.append(self.x[-1] + 1)
+        self.x.append(self.time)
+
+
+class FunctionIterator2D(Simulator):
+    def __init__(self, func, initial_state):
+        super(FunctionIterator2D, self).__init__()
+
+        self._func = func
+        self._state = initial_state
+        self.time = 0
+        self.x = [0]
+        self.y = [[initial_state[0]], [initial_state[1]]]
+
+    def step(self, delta=0):
+        self.time += 1
+        self._state = self._func(*self._state)
+        self.x.append(self.time)
+        self.y[0].append(self._state[0])
+        self.y[1].append(self._state[1])
+

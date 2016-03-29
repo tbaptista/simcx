@@ -12,6 +12,8 @@ dynamical systems.
 
 from __future__ import division
 import simcx
+from simcx.simulators import FunctionIterator
+from simcx.visuals import TimeSeries
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -22,8 +24,8 @@ def sqrt(x):
 
 if __name__ == '__main__':
 
-    sim_sqrt = simcx.simulators.FunctionIterator(sqrt, [0.2, 0.8, 1.0, 1.2, 1.8, 2, 3, 4])
-    vis = simcx.visuals.LinesVisual(sim_sqrt)
+    sim_sqrt = FunctionIterator(sqrt, [0.2, 0.8, 1.0, 1.2, 1.8, 2, 3, 4])
+    vis = TimeSeries(sim_sqrt)
 
     display = simcx.Display()
     display.add_simulator(sim_sqrt)

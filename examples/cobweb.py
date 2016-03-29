@@ -21,8 +21,8 @@ def sqrt(x):
 
 if __name__ == '__main__':
     sim_sqrt = simcx.simulators.FunctionIterator(sqrt, [0.2, 2])
-    cobweb = simcx.visuals.CobWebVisual(sim_sqrt, 0, 2.5, '$\sqrt{x}$', width=800,
-                                        height=400)
+    cobweb = simcx.visuals.CobWebVisual(sim_sqrt, 0, 2.5, '$\sqrt{x}$',
+                                        width=800, height=400)
 
     display = simcx.Display()
     display.add_simulator(sim_sqrt)

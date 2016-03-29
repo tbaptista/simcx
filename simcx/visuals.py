@@ -24,29 +24,38 @@ should not be considered stable in terms of API.
 
 from __future__ import division
 from . import MplVisual, Simulator
-from .simulators import FunctionIterator
+from .simulators import FunctionIterator, FunctionIterator2D
 import numpy as np
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
 
 
-class LineVisual(MplVisual):
-    def __init__(self, sim: Simulator, **kwargs):
-        super(LineVisual, self).__init__(sim, **kwargs)
+class Line(MplVisual):
+    def __init__(self, sim: Simulator, x: list, y: list, auto_size=True,
+                 **kwargs):
+        super(Line, self).__init__(sim, **kwargs)
+
+        self._auto_size = auto_size
+
+        self._x = x
+        self._y = y
 
         self.ax = self.figure.add_subplot(111)
-        self.ax.set_xlim(-10,10)
-        self.ax.set_ylim(-10,10)
-        self.l, = self.ax.plot(self.sim.x, self.sim.y)
+        self.l, = self.ax.plot(self._x, self._y)
 
     def draw(self):
-        self.l.set_data(self.sim.x, self.sim.y)
+        self.l.set_data(self._x, self._y)
+        if self._auto_size:
+            self.ax.relim()
+            self.ax.autoscale_view()
 
 
-class LinesVisual(MplVisual):
-    def __init__(self, sim: Simulator, **kwargs):
-        super(LinesVisual, self).__init__(sim, **kwargs)
+class Lines(MplVisual):
+    def __init__(self, sim: Simulator, auto_size=True, **kwargs):
+        super(Lines, self).__init__(sim, **kwargs)
+
+        self._auto_size = auto_size
 
         self.ax = self.figure.add_subplot(111)
         self._lines = []
@@ -57,20 +66,40 @@ class LinesVisual(MplVisual):
     def draw(self):
         for i in range(len(self._lines)):
             self._lines[i].set_data(self.sim.x, self.sim.y[i])
-        self.ax.relim()
-        self.ax.autoscale_view()
+
+        if self._auto_size:
+            self.ax.relim()
+            self.ax.autoscale_view()
+
+
+class TimeSeries(Lines):
+    def __init__(self, sim: FunctionIterator, **kwargs):
+        super(TimeSeries, self).__init__(sim, **kwargs)
+
+        self.ax.set_title('Time Series')
+        self.ax.set_xlabel('Time')
+        self.ax.set_ylabel('State')
+
+
+class PhaseSpace2D(Line):
+    def __init__(self, sim: FunctionIterator2D, name_x, name_y, **kwargs):
+        super(PhaseSpace2D, self).__init__(sim, sim.y[0], sim.y[1], **kwargs)
+
+        self.ax.set_title('Phase Space')
+        self.ax.set_xlabel(name_x)
+        self.ax.set_ylabel(name_y)
 
 
 class CobWebVisual(MplVisual):
-    def __init__(self, sim: FunctionIterator, minx, maxx, func_string='',
+    def __init__(self, sim: FunctionIterator, min_x, max_x, func_string='',
                  **kwargs):
         super(CobWebVisual, self).__init__(sim, **kwargs)
 
         self.ax = self.figure.add_subplot(111)
 
         # PLot function
-        x = np.linspace(minx, maxx, 1000)
-        func_vec = np.vectorize(self.sim.func)
+        x = np.linspace(min_x, max_x, 1000)
+        func_vec = np.frompyfunc(self.sim.func)
         y = func_vec(x)
         self.ax.plot(x, y, label='$f(x)=$' + func_string)
 
@@ -105,9 +134,9 @@ class FinalStateDiagram(MplVisual):
 
         self.ax = self.figure.add_subplot(111)
         self.ax.set_title('Final State Diagram')
-        xmin = min([y[0] for y in self.sim.y])
-        xmax = max([y[0] for y in self.sim.y])
-        self.ax.set_xlim(xmin - 0.5, xmax + 0.5)
+        x_min = min([y[0] for y in self.sim.y])
+        x_max = max([y[0] for y in self.sim.y])
+        self.ax.set_xlim(x_min - 0.5, x_max + 0.5)
         self.ax.set_xlabel('$t={}$'.format(self.sim.time))
         self.ax.set_ylabel('Final Value(s)')
 

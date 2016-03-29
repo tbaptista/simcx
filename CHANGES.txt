@@ -1,3 +1,9 @@
+v1.0.0-beta.14, 2016-03-29
+
+v1.0.0-beta.13, 2016-03-15
+
+v1.0.0-beta.12, 2016-03-08
+
 v1.0.0-beta.11, 2016-02-23
     * Change the base architecture of the framework. Visuals are now a separate class. Warning: API changed.
     * Update basic_example and random_particles examples to conform with new API.
