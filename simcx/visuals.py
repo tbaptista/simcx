@@ -24,7 +24,7 @@ should not be considered stable in terms of API.
 
 from __future__ import division
 from . import MplVisual, Simulator
-from .simulators import FunctionIterator, FunctionIterator2D
+from .simulators import FunctionIterator, FunctionIterator2D, FinalStateIterator
 import numpy as np
 
 __docformat__ = 'restructuredtext'
@@ -145,3 +145,19 @@ class FinalStateDiagram(MplVisual):
         if self.sim.time >= self._discard_initial:
             for i in range(len(self.sim.y)):
                 self.ax.scatter([self._seeds[i]], self.sim.y[i][-1:], c='black')
+
+
+class BifurcationDiagram(MplVisual):
+    def __init__(self, sim: FinalStateIterator, **kwargs):
+        super(BifurcationDiagram, self).__init__(sim, **kwargs)
+
+        self.ax = self.figure.add_subplot(111)
+        self.ax.set_title('Bifurcation Diagram')
+        self.ax.set_xlabel('a')
+        self.ax.set_ylabel('Final Value(s)')
+        self.ax.set_xlim(sim.start, sim.end)
+        self.ax.set_ylim(0, 1)
+        self.ax.grid()
+
+    def draw(self):
+        self.ax.scatter(self.sim.x, self.sim.y, s=0.5, c='black')

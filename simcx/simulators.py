@@ -24,6 +24,7 @@ should *not* be considered stable in terms of API.
 
 from __future__ import division
 from simcx import Simulator
+import numpy as np
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -63,4 +64,35 @@ class FunctionIterator2D(Simulator):
         self.x.append(self.time)
         self.y[0].append(self._state[0])
         self.y[1].append(self._state[1])
+
+
+class FinalStateIterator(Simulator):
+    def __init__(self, func, seed, start, end, discard=1000, samples=250,
+                 delta=0.01):
+        super(FinalStateIterator, self).__init__()
+
+        self._func = func
+        self._seed = seed
+        self._a = start
+        self.start = start
+        self.end = end
+        self._discard = discard
+        self._samples = samples
+        self._delta = delta
+
+        self.x = self.y = np.zeros(self._samples)
+        self.y = self.y = np.zeros(self._samples)
+
+    def step(self, delta=0):
+        if self._a <= self.end:
+            x = self._seed
+            for i in range(self._discard):
+                x = self._func(self._a, x)
+            for i in range(self._samples):
+                x = self._func(self._a, x)
+                self.y[i] = x
+
+            self.x = np.zeros(self._samples)
+            self.x += self._a
+            self._a += self._delta
 
