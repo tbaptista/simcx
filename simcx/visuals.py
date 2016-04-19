@@ -23,9 +23,11 @@ should not be considered stable in terms of API.
 """
 
 from __future__ import division
-from . import MplVisual, Simulator
+from . import MplVisual, Simulator, Visual
 from .simulators import FunctionIterator, FunctionIterator2D, FinalStateIterator
 import numpy as np
+from matplotlib.transforms import Affine2D
+import pyglet
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -161,3 +163,27 @@ class BifurcationDiagram(MplVisual):
 
     def draw(self):
         self.ax.scatter(self.sim.x, self.sim.y, s=0.5, c='black')
+
+
+class Points2D(Visual):
+    def __init__(self, sim, **kwargs):
+        super(Points2D, self).__init__(sim, **kwargs)
+
+        if 'screen_transform' in kwargs:
+            self._screen_transform = kwargs['screen_transform']
+        else:
+            self._screen_transform = Affine2D().scale(self.width, self.height)
+        self._batch = pyglet.graphics.Batch()
+
+    def draw(self):
+        if self.sim.draw_points:
+            points = self.sim.draw_points
+
+            for i in range(len(points)):
+                p = self._screen_transform.transform_point(points[i])
+                self._batch.add(1, pyglet.gl.GL_POINTS, None, ('v2f', p),
+                               ('c3B', (255, 255, 255)))
+
+            self.sim.draw_points.clear()
+
+        self._batch.draw()

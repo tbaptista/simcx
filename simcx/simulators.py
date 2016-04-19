@@ -96,3 +96,32 @@ class FinalStateIterator(Simulator):
             self.x += self._a
             self._a += self._delta
 
+
+class IFS(Simulator):
+    """An Iterated Function Systems simulator using the Chaos Game."""
+
+    def __init__(self, transforms, probs, step_size=100):
+        super(IFS, self).__init__()
+
+        self._discard = 10
+        self._step_size = step_size
+        self._transforms = transforms[:]
+        self._n = len(transforms)
+        self._probs = probs[:]
+
+        self._point = np.array([0.0, 0.0], dtype=np.float64)
+        self.draw_points = []
+
+        for i in range(self._discard):
+            self.step(0, discard=True)
+
+    def _get_random_transform(self):
+        i = np.random.choice(self._n, p=self._probs)
+        return self._transforms[i]
+
+    def step(self, delta=0, discard=False):
+        for _ in range(self._step_size):
+            transform = self._get_random_transform()
+            self._point = transform.transform_point(self._point)
+            if not discard:
+                self.draw_points.append(self._point)
