@@ -166,11 +166,11 @@ class BifurcationDiagram(MplVisual):
 
 
 class Points2D(Visual):
-    def __init__(self, sim, **kwargs):
+    def __init__(self, sim, screen_transform=None, **kwargs):
         super(Points2D, self).__init__(sim, **kwargs)
 
-        if 'screen_transform' in kwargs:
-            self._screen_transform = kwargs['screen_transform']
+        if screen_transform is not None:
+            self._screen_transform = screen_transform
         else:
             self._screen_transform = Affine2D().scale(self.width, self.height)
         self._batch = pyglet.graphics.Batch()
