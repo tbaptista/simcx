@@ -1,3 +1,10 @@
+v1.0.0-beta.16, 2016-04-19
+    * Add Iterated Function Systems simulator and Points2D visual, to simulate de chaos game.
+
+v1.0.0-beta.15, 2016-04-12
+    * Add FinalStateIterator simulator, and BifurcationDiagram visual.
+    * Update bifurcation.py example to conform to new API.
+
 v1.0.0-beta.14, 2016-03-29
 
 v1.0.0-beta.13, 2016-03-15
