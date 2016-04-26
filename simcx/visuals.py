@@ -28,6 +28,7 @@ from .simulators import FunctionIterator, FunctionIterator2D, FinalStateIterator
 import numpy as np
 from matplotlib.transforms import Affine2D
 import pyglet
+from pyglet.gl import *
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -166,13 +167,14 @@ class BifurcationDiagram(MplVisual):
 
 
 class Points2D(Visual):
-    def __init__(self, sim, screen_transform=None, **kwargs):
+    def __init__(self, sim, min_x=0., max_x=1., min_y=0., max_y=1., **kwargs):
         super(Points2D, self).__init__(sim, **kwargs)
 
-        if screen_transform is not None:
-            self._screen_transform = screen_transform
-        else:
-            self._screen_transform = Affine2D().scale(self.width, self.height)
+        self._scale_x = self.width / abs(max_x - min_x)
+        self._scale_y = self.height / abs(max_y - min_y)
+        self._translate_x = abs((max_x + min_x) / 2 - 0.5) * self.width
+        self._translate_y = abs((max_y + min_y) / 2 - 0.5) * self.height
+        print(self._translate_x, self._translate_y, self._scale_x, self._scale_y)
         self._batch = pyglet.graphics.Batch()
 
     def draw(self):
@@ -180,10 +182,13 @@ class Points2D(Visual):
             points = self.sim.draw_points
 
             for i in range(len(points)):
-                p = self._screen_transform.transform_point(points[i])
-                self._batch.add(1, pyglet.gl.GL_POINTS, None, ('v2f', p),
-                               ('c3B', (255, 255, 255)))
+                self._batch.add(1, pyglet.gl.GL_POINTS, None, ('v2f', points[i]),
+                                ('c3B', (255, 255, 255)))
 
             self.sim.draw_points.clear()
 
+        glPushMatrix()
+        glTranslatef(self._translate_x, self._translate_y, 0.)
+        glScalef(self._scale_x, self._scale_y, 1.)
         self._batch.draw()
+        glPopMatrix()
