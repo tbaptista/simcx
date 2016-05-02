@@ -19,8 +19,10 @@ __author__ = 'Tiago Baptista'
 
 
 if __name__ == '__main__':
-    sim = simcx.simulators.JuliaSet(-1, samples=1000, iterations=100)
-    vis = simcx.visuals.Points2D(sim, -2., 2., -2., 2., width=1000, height=1000)
+    c = -1
+
+    sim = simcx.simulators.JuliaSet(c, samples=500, iterations=100)
+    vis = simcx.visuals.Points2D(sim, -2., 2., -2., 2., width=500, height=500)
 
     display = simcx.Display()
     display.add_simulator(sim)
