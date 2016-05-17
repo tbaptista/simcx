@@ -85,12 +85,13 @@ class Boid(pyafai.Agent):
 
         # Separation
         s = np.zeros(2)
-        for ag in neighbours:
-            v = self.body.pos - ag.body.pos
-            d = np.linalg.norm(v)
-            if 0 < d < self.size*3:
-                v /= d**2
-                s += v * self.size**2
+        if neighbours:
+            for ag in neighbours:
+                v = self.body.pos - ag.body.pos
+                d = np.linalg.norm(v)
+                if 0 < d < self.size*3:
+                    v /= d**2
+                    s += v * self.size**2
 
         # Alignment
         a = np.zeros(2)
@@ -169,6 +170,28 @@ def setup(n, make_movie=False):
     world = BoidsWorld()
     world.target = [400.0, 300.0]
 
+    for i in range(n):
+        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=20)
+        agent.body.velocity = np.random.uniform(10, 20, 2)
+        world.add_agent(agent)
+
+    world.bind_array()
+    sim = simcx.PyafaiSimulator(world)
+    vis = simcx.PyafaiVisual(sim, 800, 600)
+
+    display = BoidsDisplay(800, 600, interval=0.04)
+    display.add_simulator(sim)
+    display.add_visual(vis)
+
+    if make_movie:
+        display.real_time = False
+        display.start_recording('boids.mp4')
+
+
+def setup_two(n, make_movie=False):
+    world = BoidsWorld()
+    world.target = [400.0, 300.0]
+
     for i in range(n//2):
         agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=20)
         agent.body.velocity = np.random.uniform(10, 20, 2)
@@ -189,7 +212,7 @@ def setup(n, make_movie=False):
 
     if make_movie:
         display.real_time = False
-        display.start_recording('boids.mp4')
+        display.start_recording('boids2.mp4')
 
 if __name__ == '__main__':
     setup(50)

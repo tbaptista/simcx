@@ -163,15 +163,15 @@ class SegregationPlot(simcx.MplVisual):
 
 
 def setup(equal_threshold):
-    world = PolygonWorld(20, 20, 20, equal_threshold=equal_threshold)
+    world = PolygonWorld(20, 20, 30, equal_threshold=equal_threshold)
     sim = simcx.PyafaiSimulator(world)
     vis = simcx.PyafaiVisual(sim)
     display = simcx.Display()
 
     display.add_simulator(sim)
     display.add_visual(vis, 0, 200)
-    display.add_visual(SegregationPlot(sim, width=400, height=300))
+    display.add_visual(SegregationPlot(sim, width=600, height=200))
 
 if __name__ == '__main__':
-    setup(0.5)
+    setup(0.33)
     simcx.run()
