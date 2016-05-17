@@ -50,6 +50,6 @@ setup(
         'Topic :: Scientific/Engineering :: Artificial Life',
     ],
     packages=['simcx'],
-    install_requires = ['pyglet', 'matplotlib', 'numpy', 'scipy'],
+    install_requires = ['pyglet', 'matplotlib', 'numpy', 'scipy', 'pyafai'],
 
 )
