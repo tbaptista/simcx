@@ -1,6 +1,6 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015 Tiago Baptista
+# Copyright (c) 2015-2016 Tiago Baptista
 # All rights reserved.
 # -----------------------------------------------------------------------------
 
@@ -10,24 +10,20 @@ Implementation of boids using pyafai and simcx.
 """
 
 from __future__ import division
-
-__docformat__ = 'restructuredtext'
-__author__ = 'Tiago Baptista'
-
-# Allow the import of the framework from one directory down the hierarchy
-import sys
-sys.path.insert(1,'..')
-
-
 import pyafai
 import numpy as np
 from scipy.spatial import cKDTree
 import math
 import random
 import simcx
+import pyglet
+
+__docformat__ = 'restructuredtext'
+__author__ = 'Tiago Baptista'
 
 
 RAD2DEG = 180.0 / math.pi
+
 
 class BoidBody(pyafai.Object):
     def __init__(self, x, y, angle):
@@ -72,7 +68,8 @@ class BoidBody(pyafai.Object):
 
 
 class Boid(pyafai.Agent):
-    def __init__(self, x, y, angle, size=8, radius=50, color=('c3B', (200, 0, 0))):
+    def __init__(self, x, y, angle, size=8, radius=50,
+                 color=('c3B', (200, 0, 0))):
         super(Boid, self).__init__()
 
         # Create body
@@ -139,7 +136,8 @@ class BoidsWorld(pyafai.World):
     def target(self, v):
         move = v - self._target
         self._target[:] = v
-        self._target_shape.vertexlist.vertices[:] = self._target_shape.translate(move[0], move[1])
+        self._target_shape.vertexlist.vertices[::2] += move[0]
+        self._target_shape.vertexlist.vertices[1::2] += move[1]
 
     def bind_array(self):
         n = len(self._agents)
@@ -161,8 +159,13 @@ class BoidsWorld(pyafai.World):
         return self._agents
 
 
+class BoidsDisplay(simcx.Display):
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == pyglet.window.mouse.LEFT:
+            self._sims[0].world.target = np.array([x, y], dtype='f4')
 
-def setup(n):
+
+def setup(n, make_movie=False):
     world = BoidsWorld()
     world.target = [400.0, 300.0]
 
@@ -177,11 +180,17 @@ def setup(n):
         world.add_agent(agent)
 
     world.bind_array()
-    sim = simcx.PyafaiSimulator(world, width=800, height=600)
+    sim = simcx.PyafaiSimulator(world)
+    vis = simcx.PyafaiVisual(sim, 800, 600)
 
-    display = simcx.Display(800, 600, interval=0.016)
+    display = BoidsDisplay(800, 600, interval=0.04)
     display.add_simulator(sim)
+    display.add_visual(vis)
+
+    if make_movie:
+        display.real_time = False
+        display.start_recording('boids.mp4')
 
 if __name__ == '__main__':
-    setup(80)
+    setup(50)
     simcx.run()

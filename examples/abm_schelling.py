@@ -1,6 +1,6 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015 Tiago Baptista
+# Copyright (c) 2015-2016 Tiago Baptista
 # All rights reserved.
 # -----------------------------------------------------------------------------
 
@@ -10,19 +10,13 @@ Implementation of Thomas Schelling's segregation model using pyafai and simcx.
 """
 
 from __future__ import division
-
-__docformat__ = 'restructuredtext'
-__author__ = 'Tiago Baptista'
-
-# Allow the import of the framework from one directory down the hierarchy
-import sys
-sys.path.insert(1,'..')
-
-
 import pyafai
 import random
 import numpy as np
 import simcx
+
+__docformat__ = 'restructuredtext'
+__author__ = 'Tiago Baptista'
 
 
 class Agent(pyafai.Agent):
@@ -86,8 +80,11 @@ class EqualNeighbours(pyafai.Perception):
 
 
 class PolygonWorld(pyafai.World2DGrid):
-    def __init__(self, width, height, cell, equal_threshold=0.33, init_dist=(0.50, 0.50), init_empty=0.2):
-        assert sum(init_dist) == 1.0, "The initial distribution has to sum up to 1.0!"
+    def __init__(self, width, height, cell, equal_threshold=0.33,
+                 init_dist=(0.50, 0.50), init_empty=0.2):
+
+        assert sum(init_dist) == 1.0, \
+            "The initial distribution has to sum up to 1.0!"
 
         super(PolygonWorld, self).__init__(width, height, cell)
 
@@ -136,28 +133,28 @@ class PolygonWorld(pyafai.World2DGrid):
         return seg
 
 
-class SegregationPlot(simcx.Simulator):
-    def __init__(self, world: PolygonWorld, **kwargs):
-        super(SegregationPlot, self).__init__(**kwargs)
+class SegregationPlot(simcx.MplVisual):
+    def __init__(self, sim: simcx.PyafaiSimulator, **kwargs):
+        super(SegregationPlot, self).__init__(sim, **kwargs)
 
-        self.world = world
+        self.world = sim.world
         self.x = [0]
-        self.y = [world.get_segregation() * 100]
+        self.y = [self.world.get_segregation() * 100]
 
         self.ax = self.figure.add_subplot(111)
         self.ax.set_xlabel('Time')
         self.ax.set_ylabel('Segregation (%)')
-        self.ax.set_xlim(0,100)
-        self.ax.set_ylim(0,100)
+        self.ax.set_xlim(0, 100)
+        self.ax.set_ylim(0, 100)
         self._max_time = 100
         self.l, = self.ax.plot(self.x, self.y)
         self.update_image()
 
-    def step(self, dt):
+    def draw(self):
+
         self.x.append(self.x[-1] + 1)
         self.y.append(self.world.get_segregation() * 100)
 
-    def draw(self):
         if self.x[-1] > self._max_time:
             self._max_time += 50
             self.ax.set_xlim(0, self._max_time)
@@ -168,10 +165,12 @@ class SegregationPlot(simcx.Simulator):
 def setup(equal_threshold):
     world = PolygonWorld(20, 20, 20, equal_threshold=equal_threshold)
     sim = simcx.PyafaiSimulator(world)
+    vis = simcx.PyafaiVisual(sim)
     display = simcx.Display()
 
-    display.add_simulator(sim, 0, 200)
-    display.add_simulator(SegregationPlot(world, width=400, height=300))
+    display.add_simulator(sim)
+    display.add_visual(vis, 0, 200)
+    display.add_visual(SegregationPlot(sim, width=400, height=300))
 
 if __name__ == '__main__':
     setup(0.5)
