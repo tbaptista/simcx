@@ -31,7 +31,7 @@ setup(
     version=version['__version__'],
     description='Simulation Framework for Complex Systems',
     long_description = long_description,
-    url='none',
+    #url='none',
     author='Tiago Baptista',
     author_email='baptista@dei.uc.pt',
     license='Apache License 2.0',
