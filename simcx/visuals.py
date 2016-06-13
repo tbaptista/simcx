@@ -102,7 +102,7 @@ class CobWebVisual(MplVisual):
 
         # PLot function
         x = np.linspace(min_x, max_x, 1000)
-        func_vec = np.frompyfunc(self.sim.func)
+        func_vec = np.frompyfunc(self.sim.func, 1, 1)
         y = func_vec(x)
         self.ax.plot(x, y, label='$f(x)=$' + func_string)
 
