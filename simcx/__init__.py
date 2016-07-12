@@ -63,9 +63,9 @@ class PyafaiSimulator(Simulator):
 
 
 class Visual(object):
-    def __init__(self, sim: Simulator, width=500, height=500):
-        self.width = width
-        self.height = height
+    def __init__(self, sim: Simulator, **kwargs):
+        self.width = kwargs.get('width', 500)
+        self.height = kwargs.get('height', 500)
         self.sim = sim
 
     def draw(self):
@@ -73,11 +73,13 @@ class Visual(object):
 
 
 class MplVisual(Visual):
-    def __init__(self, sim: Simulator, width=500, height=500):
-        super(MplVisual, self).__init__(sim, width, height)
+    def __init__(self, sim: Simulator, **kwargs):
+        super(MplVisual, self).__init__(sim, width=kwargs.get('width', 500),
+                                        height=kwargs.get('height', 500))
 
         self.dpi = 80
-        self.figure = plt.figure(figsize=(width/self.dpi, height/self.dpi),
+        self.figure = plt.figure(figsize=(self.width/self.dpi,
+                                          self.height/self.dpi),
                                  dpi=self.dpi)
         self._create_canvas()
 

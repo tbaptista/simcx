@@ -159,7 +159,7 @@ class BifurcationDiagram(MplVisual):
         self.ax.set_xlabel('a')
         self.ax.set_ylabel('Final Value(s)')
         self.ax.set_xlim(sim.start, sim.end)
-        self.ax.set_ylim(0, 1)
+        self.ax.set_ylim(kwargs.get('ymin', 0), kwargs.get('ymax', 1))
         self.ax.grid()
 
     def draw(self):
