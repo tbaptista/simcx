@@ -17,9 +17,6 @@ Dependencies
 - numpy (http://www.numpy.org)
 - pyafai (optional)
 
-The pyafai (Python Agent Framework for Artificial Intelligence) package is not
-yet available to the general public.
-
 Main Authors
 ------------
 | Tiago Baptista
