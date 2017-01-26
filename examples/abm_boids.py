@@ -73,9 +73,9 @@ class Boid(pyafai.Agent):
         super(Boid, self).__init__()
 
         # Create body
-        triangle = pyafai.shapes.Triangle(-size/2, -size/2, -size/2, size/2, size, 0, color=color)
+        pointer = pyafai.shapes.Pointer(size, color=color)
         self.body = BoidBody(x, y, angle)
-        self.body.add_shape(triangle)
+        self.body.add_shape(pointer)
 
         self.radius = radius
         self.size = size
@@ -89,7 +89,7 @@ class Boid(pyafai.Agent):
             for ag in neighbours:
                 v = self.body.pos - ag.body.pos
                 d = np.linalg.norm(v)
-                if 0 < d < self.size*3:
+                if 0 < d < self.size*2:
                     v /= d**2
                     s += v * self.size**2
 
@@ -115,7 +115,7 @@ class Boid(pyafai.Agent):
         # Target
         t = self.world.target - self.body.pos
 
-        self.body.velocity += c * 0.005 + a * 0.01 + s * 1 + t * 0.005
+        self.body.velocity += c * 0.005 + a * 0.01 + s * 1 + t * 0.01
 
 
 class BoidsWorld(pyafai.World):
@@ -171,7 +171,7 @@ def setup(n, make_movie=False):
     world.target = [400.0, 300.0]
 
     for i in range(n):
-        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=20)
+        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, size=4, radius=20)
         agent.body.velocity = np.random.uniform(10, 20, 2)
         world.add_agent(agent)
 
@@ -193,12 +193,12 @@ def setup_two(n, make_movie=False):
     world.target = [400.0, 300.0]
 
     for i in range(n//2):
-        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, radius=20)
+        agent = Boid(random.randint(-100, 0), random.randint(-100, 0), 0, size=4, color=('c3B', (255, 255, 255)),radius=20)
         agent.body.velocity = np.random.uniform(10, 20, 2)
         world.add_agent(agent)
 
     for i in range(n//2):
-        agent = Boid(random.randint(900, 1000), random.randint(-100, 0), 0, color=('c3B', (0, 0, 200)), radius=50)
+        agent = Boid(random.randint(900, 1000), random.randint(-100, 0), 0, color=('c3B', (255, 255, 255)), size=4, radius=50)
         agent.body.velocity = np.random.uniform(-10, -20, 2)
         world.add_agent(agent)
 
@@ -215,5 +215,6 @@ def setup_two(n, make_movie=False):
         display.start_recording('boids2.mp4')
 
 if __name__ == '__main__':
-    setup(50)
+    #setup(50)
+    setup_two(100)
     simcx.run()
