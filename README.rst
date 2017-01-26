@@ -15,7 +15,7 @@ Dependencies
 - pyglet (http://www.pyglet.org)
 - matplotlib (http://www.matplotlib.org)
 - numpy (http://www.numpy.org)
-- pyafai (optional)
+- pyafai (https://github.com/tbaptista/pyafai) (optional)
 
 Main Authors
 ------------
