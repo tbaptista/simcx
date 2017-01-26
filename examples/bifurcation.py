@@ -1,11 +1,11 @@
 # coding: utf-8
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015 Tiago Baptista
+# Copyright (c) 2015-2017 Tiago Baptista
 # All rights reserved.
 # -----------------------------------------------------------------------------
 
 """
-Basic example of the use of the simcx framework to plot the bifurcation diagram
+Basic example of the use of the SimCX framework to plot the bifurcation diagram
 of the logistic equation.
 
 """

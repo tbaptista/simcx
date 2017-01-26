@@ -17,6 +17,7 @@
 
 """
 A simulation framework for complex systems modeling and analysis.
+
 """
 
 from __future__ import division
@@ -107,7 +108,7 @@ class PyafaiVisual(Visual):
         if hasattr(self.world, 'height'):
             height = self.world.height
 
-        super(PyafaiVisual, self).__init__(sim, width, height)
+        super(PyafaiVisual, self).__init__(sim, width=width, height=height)
 
     def draw(self):
         self.world.draw()
@@ -270,16 +271,18 @@ class FFMpegWriter(animation.FFMpegWriter):
     @property
     def frame_size(self):
         """A tuple (width,height) in pixels of a movie frame."""
+
         return self.display.width, self.display.height
 
     def setup(self, display, outfile):
         """
         Perform setup for writing the movie file.
         display: `simcx.Display` instance
-            The Display instance whose framebuffer we want to use.
+        The Display instance whose framebuffer we want to use.
         outfile: string
-            The filename of the resulting movie file
+        The filename of the resulting movie file
         """
+
         self.outfile = outfile
         self.display = display
 
@@ -292,6 +295,7 @@ class FFMpegWriter(animation.FFMpegWriter):
         Grab the image information from the display and save as a movie frame.
         The keyword arguments are not being used in the subclass.
         """
+
         verbose.report('MovieWriter.grab_frame: Grabbing frame.',
                        level='debug')
         try:
