@@ -1,5 +1,5 @@
-SimCX and pyafai Tutorial
-=========================
+Agent-Based Modelling Tutorial
+==============================
 
 The SimCX framework works optionally with the pyafai framework for Agent-Based
 Modeling projects. Although it is possible to implement an agent-based model

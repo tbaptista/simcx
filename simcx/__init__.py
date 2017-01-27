@@ -16,7 +16,7 @@
 # -----------------------------------------------------------------------------
 
 """
-A simulation framework for complex systems modeling and analysis.
+A simulation framework for complex systems modelling and analysis.
 
 """
 

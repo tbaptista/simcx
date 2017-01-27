@@ -1,5 +1,5 @@
-SimCX Introductory Tutorial
-===========================
+Introductory Tutorial
+=====================
 
 In this first contact with the SimCX framework, we will walk you through its
 basic components and create an example project in that process.
