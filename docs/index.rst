@@ -10,9 +10,9 @@ Welcome to SimCX's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   simcx
    tutorial
    pyafai_tutorial
+   simcx
 
 
 Indices and tables
