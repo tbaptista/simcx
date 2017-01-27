@@ -116,7 +116,9 @@ class PyafaiVisual(Visual):
 
 
 class Display(pyglet.window.Window):
-    def __init__(self, width=500, height=500, interval=0.05, multi_sampling=True, **kwargs):
+    def __init__(self, width=500, height=500, interval=0.05,
+                 multi_sampling=True, **kwargs):
+
         if multi_sampling:
             # Enable multi sampling if available on the hardware
             platform = pyglet.window.get_platform()
@@ -130,9 +132,13 @@ class Display(pyglet.window.Window):
                 template = pyglet.gl.Config()
                 config = screen.get_best_config(template)
 
-            super(Display, self).__init__(width, height, 'Complex Systems (paused)', config=config, **kwargs)
+            super(Display, self).__init__(width, height,
+                                          'Complex Systems (paused)',
+                                          config=config, **kwargs)
         else:
-            super(Display, self).__init__(width, height, caption='Complex Systems (paused)', **kwargs)
+            super(Display, self).__init__(width, height,
+                                          caption='Complex Systems (paused)',
+                                          **kwargs)
 
         self.paused = True
         self.show_fps = False
@@ -300,7 +306,8 @@ class FFMpegWriter(animation.FFMpegWriter):
                        level='debug')
         try:
             image = pyglet.image.get_buffer_manager().get_color_buffer().get_image_data()
-            self._frame_sink().write(image.get_data('RGBA', -4 * self.display.width))
+            self._frame_sink().write(image.get_data('RGBA',
+                                                    -4 * self.display.width))
 
         except RuntimeError:
             out, err = self._proc.communicate()
