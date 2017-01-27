@@ -1,10 +1,12 @@
 SimCX -- Simulator for Complex Systems
 ======================================
 
+.. image:: https://readthedocs.org/projects/simcx/badge/?version=latest
+
 Simulator for Complex Systems. Developed for the course in Complex Systems from
 the Department of Informatics Engineering of the University of Coimbra. This
 software is still in beta stage. Tutorials and documentation are currently in
-preparation, and should be released soon.
+preparation, and should be finished soon.
 
 | Copyright (c) 2015-2016 Tiago Baptista - baptista@dei.uc.pt
 | Licensed under the Apache License, Version 2.0 (see LICENSE.txt)
