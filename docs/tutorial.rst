@@ -16,6 +16,11 @@ submodules, several specific implementations of simulators and visuals. You can
 use these, or create your own simulators and visuals, by deriving the base
 classes.
 
+The framework is generic in the sense that we can use several modelling and
+simulation paradigms, like difference equations, diferential equations, or 
+agent-based modelling. In this first tutorial we will focus on using difference
+equations to simulate a dynamical system. 
+
 
 Installation
 ____________
