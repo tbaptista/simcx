@@ -46,13 +46,35 @@ to its directory before executing.
 Model Description
 _________________
 
-TBD.
+In this tutorial we will use SimCX to model population growth using difference
+equations. We will use an example taken from Hiroki Sayama's book Introduction
+to the Modeling and Analysis of Complex Systems [1]. To start we will model a
+population with exponential growth, using the following equation:
+
+.. math::
+    x_t = a x_{t-1}
+
+Here, :math:`x_t` is the population size at time step :math:`t`, :math:`x_{t-1}`
+is the population size at time step :math:`t-1`, and :math:`a` is the growth
+ratio of the population per time step. This simple model will give us an
+unbounded exponential growth of the population, which is not very life like. We
+can thus consider adding a bound to the size of the population, using the
+following equation:
+
+.. math::
+    x_t = x_{t-1} + r x_{t-1} \left(1 - \frac{x_{t-1}}{K} \right)
+
+We have introduced a new parameter :math:`K` that represents the carrying
+capacity of the environment. Also, we have made the following substitution
+:math:`r=a-1`. To get more details on the mathematical modelling and derivation
+of these equations, refer to [1].
+
 
 
 Implementing the Model
 ______________________
 
-TBD.
+
 
 
 Running
