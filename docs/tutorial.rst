@@ -190,6 +190,24 @@ line:
 We are now testing all these four initial values for the population size. Run
 the simulation and see what you get.
 
+To end this first tutorial we will make a movie of our simulation run. The
+framework already provides this capability. To create the movie, you can simply
+add to your code, before the simcx.run() line, the following:
+
+.. code-block:: python
+
+    display.start_recording('movie.mp4')
+
+This will create a movie file, with the filename provided. The recording will
+span the whole simulation run. From the start, up to the application close. For
+each step of the simulation, one frame will be recorded. By default, the movie
+will be recorded with a frame rate of 20 fps, but that can be changed by passing
+the fps parameter to the :meth:`.Display.start_recording` method. We can also
+alter the bitrate of the recording from the default of 1800 Kbps. You can also
+start a recording during any simulation without adding any code, simply by
+using the :kbd:`ALT+R` keyboard shortcut. In that case, the file will have the
+default name of *simcx.mp4*.
+
 In this example we mostly made use of the simulators and visuals that are
 provided with the framework. To make full use of SimCX, though, you may need to
 implement your own simulators and visuals. To get an idea of how the ones used
