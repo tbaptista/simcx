@@ -1,7 +1,7 @@
 SimCX -- Simulator for Complex Systems
 ======================================
 
-.. image:: https://readthedocs.org/projects/simcx/badge/?version=latest
+.. image:: http://readthedocs.org/projects/simcx/badge/?version=latest
   :target: http://simcx.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
