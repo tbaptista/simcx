@@ -33,7 +33,12 @@ __author__ = 'Tiago Baptista'
 class FunctionIterator(Simulator):
     def __init__(self, func, initial_states):
         super(FunctionIterator, self).__init__()
-        self._state = [state for state in initial_states]
+
+        # Allow initial states to be a list or a single value
+        if not isinstance(initial_states, list):
+            initial_states = [initial_states]
+
+        self._state = initial_states[:]
         self._n_states = len(self._state)
         self.func = func
         self.time = 0
@@ -46,6 +51,12 @@ class FunctionIterator(Simulator):
             self._state[i] = self.func(self._state[i])
             self.y[i].append(self._state[i])
         self.x.append(self.time)
+
+    def reset(self):
+        self._state = self.y[0][:]
+        self.time = 0
+        self.x = [0]
+        self.y = [[state] for state in self._state]
 
 
 class FunctionIterator2D(Simulator):
