@@ -121,10 +121,12 @@ class PyafaiVisual(Visual):
 
 # Prevent readthedocs from using pyglet.window as GLU is not installed there.
 if on_rtd:
-    pyglet.window.Window = object
+    pyglet_window = object
+else:
+    pyglet_window = pyglet.window.Window
 
 
-class Display(pyglet.window.Window):
+class Display(pyglet_window):
     def __init__(self, width=500, height=500, interval=0.05,
                  multi_sampling=True, **kwargs):
 
