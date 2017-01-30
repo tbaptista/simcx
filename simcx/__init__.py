@@ -178,7 +178,7 @@ class Display(pyglet_window):
             if isinstance(visual, MplVisual):
                 visual.update_image()
 
-    def start_recording(self, filename, fps=None, bitrate=1800):
+    def start_recording(self, filename='simcx.mp4', fps=None, bitrate=1800):
         if self._movie_writer is None:
             if fps is None:
                 fps = 1 // self._interval
@@ -224,8 +224,8 @@ class Display(pyglet_window):
 
         elif symbol == pyglet.window.key.R:
             if pyglet.window.key.MOD_ALT & modifiers:
-                self.start_recording(self._movie_filename)
-            else:
+                self.start_recording()
+            elif modifiers == 0:
                 if self.paused:
                     self._reset_simulation()
 
