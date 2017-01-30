@@ -121,7 +121,6 @@ class PyafaiVisual(Visual):
 
 # Prevent readthedocs from using pyglet.window as GLU is not installed there.
 if on_rtd:
-    print('ReadTheDocs')
     pyglet.window.Window = object
 
 
