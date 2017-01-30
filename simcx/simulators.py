@@ -53,7 +53,7 @@ class FunctionIterator(Simulator):
         self.x.append(self.time)
 
     def reset(self):
-        self._state = self.y[0][:]
+        self._state = [y[0] for y in self.y]
         self.time = 0
         self.x = [0]
         self.y = [[state] for state in self._state]
