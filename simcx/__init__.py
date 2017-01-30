@@ -153,7 +153,7 @@ class Display(pyglet_window):
 
         self.paused = True
         self.show_fps = False
-        self.real_time = True
+        self.real_time = False
         self._recording = False
         self._movie_writer = None
         self._interval = interval
