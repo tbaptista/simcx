@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015-2016 Tiago Baptista
+# Copyright (c) 2015-2017 Tiago Baptista
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib import animation
 from matplotlib import verbose
 import pyglet
+import os
 
 try:
     from io import BytesIO as StringIO
@@ -38,6 +39,9 @@ except ImportError:
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
+
+# Variable to determine if we are being imported by readthedocs autobuild
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 
 class Simulator(object):
@@ -113,6 +117,12 @@ class PyafaiVisual(Visual):
     def draw(self):
         self.world.draw()
         self.world.draw_objects()
+
+
+# Prevent readthedocs from using pyglet.window as GLU is not installed there.
+if on_rtd:
+    print('ReadTheDocs')
+    pyglet.window.Window = object
 
 
 class Display(pyglet.window.Window):
