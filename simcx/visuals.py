@@ -28,7 +28,6 @@ from .simulators import FunctionIterator, FunctionIterator2D, FinalStateIterator
 import numpy as np
 from matplotlib.transforms import Affine2D
 import pyglet
-from pyglet.gl import *
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -187,8 +186,8 @@ class Points2D(Visual):
 
             self.sim.draw_points.clear()
 
-        glPushMatrix()
-        glTranslatef(self._translate_x, self._translate_y, 0.)
-        glScalef(self._scale_x, self._scale_y, 1.)
+        pyglet.gl.glPushMatrix()
+        pyglet.gl.glTranslatef(self._translate_x, self._translate_y, 0.)
+        pyglet.gl.glScalef(self._scale_x, self._scale_y, 1.)
         self._batch.draw()
-        glPopMatrix()
+        pyglet.gl.glPopMatrix()
