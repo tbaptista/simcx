@@ -2,6 +2,8 @@ SimCX -- Simulator for Complex Systems
 ======================================
 
 .. image:: https://readthedocs.org/projects/simcx/badge/?version=latest
+:target: http://simcx.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
 
 Simulator for Complex Systems. Developed for the course in Complex Systems from
 the Department of Informatics Engineering of the University of Coimbra. This
