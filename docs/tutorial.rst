@@ -94,7 +94,7 @@ function that in turn returns a function.
 .. code-block:: python
 
     def eq1(a):
-    return lambda x: a * x
+    	return lambda x: a * x
 
 Next we will create a new window to control our simulation. This is done by
 creating a new instance of the :class:`.Display` class. By default the window is
