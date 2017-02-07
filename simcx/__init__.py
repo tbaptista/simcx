@@ -130,6 +130,11 @@ class Display(pyglet_window):
     def __init__(self, width=500, height=500, interval=0.05,
                  multi_sampling=True, **kwargs):
 
+        if 'caption' not in kwargs:
+            kwargs['caption'] = 'Complex Systems (paused)'
+        else:
+            kwargs['caption'] += ' (paused)'
+
         if multi_sampling:
             # Enable multi sampling if available on the hardware
             platform = pyglet.window.get_platform()
@@ -144,11 +149,9 @@ class Display(pyglet_window):
                 config = screen.get_best_config(template)
 
             super(Display, self).__init__(width, height,
-                                          'Complex Systems (paused)',
                                           config=config, **kwargs)
         else:
             super(Display, self).__init__(width, height,
-                                          caption='Complex Systems (paused)',
                                           **kwargs)
 
         self.paused = True

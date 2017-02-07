@@ -47,12 +47,12 @@ def setup(n, width=800, height=600):
     world = pyafai.World2D(width, height)
     sim = simcx.PyafaiSimulator(world)
     vis = simcx.PyafaiVisual(sim)
-    display = simcx.Display(width, height)
+    display = simcx.Display(width, height, caption="Random Walkers")
 
     display.add_simulator(sim)
     display.add_visual(vis)
 
-    # Create agents.
+    # Create agents
     x = np.random.randint(10, width-10, n)
     y = np.random.randint(10, height-10, n)
     speed = np.random.randint(50, 100, n)
