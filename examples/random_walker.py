@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 
 """
-Tutorial of the usage of pyafai with simcx. Implementation of random walkers.
+Tutorial on the usage of pyafai with simcx. Implementation of random walkers.
 
 """
 
@@ -25,8 +25,7 @@ class RandomWalker(pyafai.Agent):
         super(RandomWalker, self).__init__()
 
         obj = pyafai.objects.SimplePhysicsObject(x, y, angle)
-        shape = pyafai.shapes.Triangle(0, -size, size*2, 0, 0, size,
-                                       color=color)
+        shape = pyafai.shapes.Pointer(size, color=color)
         obj.add_shape(shape)
         obj.velocity = vel
         self.body = obj
@@ -64,7 +63,7 @@ def setup(n, width=800, height=600):
                           ('c3B', (random.randint(0,255),
                                     random.randint(0,255),
                                     random.randint(0,255))),
-                          5)
+                          10)
         world.add_agent(ag)
 
 
