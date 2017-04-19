@@ -173,7 +173,6 @@ class Points2D(Visual):
         self._scale_y = self.height / abs(max_y - min_y)
         self._translate_x = abs((max_x + min_x) / 2 - 0.5) * self.width
         self._translate_y = abs((max_y + min_y) / 2 - 0.5) * self.height
-        print(self._translate_x, self._translate_y, self._scale_x, self._scale_y)
         self._batch = pyglet.graphics.Batch()
 
     def draw(self):
