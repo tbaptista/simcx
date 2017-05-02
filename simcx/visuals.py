@@ -171,8 +171,8 @@ class Points2D(Visual):
 
         self._scale_x = self.width / abs(max_x - min_x)
         self._scale_y = self.height / abs(max_y - min_y)
-        self._translate_x = abs((max_x + min_x) / 2 - 0.5) * self.width
-        self._translate_y = abs((max_y + min_y) / 2 - 0.5) * self.height
+        self._translate_x = -min_x
+        self._translate_y = -min_y
         self._batch = pyglet.graphics.Batch()
 
     def draw(self):
@@ -186,7 +186,7 @@ class Points2D(Visual):
             self.sim.draw_points.clear()
 
         pyglet.gl.glPushMatrix()
-        pyglet.gl.glTranslatef(self._translate_x, self._translate_y, 0.)
         pyglet.gl.glScalef(self._scale_x, self._scale_y, 1.)
+        pyglet.gl.glTranslatef(self._translate_x, self._translate_y, 0.)
         self._batch.draw()
         pyglet.gl.glPopMatrix()
