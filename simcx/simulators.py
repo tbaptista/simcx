@@ -140,7 +140,7 @@ class IFS(Simulator):
 
 class JuliaSet(Simulator):
     """A simulator to calculate the Julia Set of a function in the form
-    f(z) = z^2 + c. The simulator will compute de full Julia Set for the
+    f(z) = z^2 + c. The simulator will compute de filled Julia Set for the
     given range (min_x, min_y) to (max_x, max_y) on creation of the instance."""
 
     def __init__(self, c, min_x=-2, max_x=2, min_y=-2, max_y=2, samples=500,
@@ -164,6 +164,7 @@ class JuliaSet(Simulator):
 
     def _compute(self):
         r = max(2, abs(self._c))
+        r2 = r*r
         xs = np.linspace(self._min_x, self._max_x, self._samples)
         ys = np.linspace(self._min_y, self._max_y, self._samples)
 
@@ -173,7 +174,7 @@ class JuliaSet(Simulator):
             for x in xs:
                 z = complex(x, y)
                 count = 0
-                while count < self._iterations and abs(z) <= r:
+                while count < self._iterations and z.real*z.real + z.imag*z.imag < r2:
                     z = z*z + self._c
                     count += 1
 
