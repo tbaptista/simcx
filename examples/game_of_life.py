@@ -64,8 +64,8 @@ class Grid2D(simcx.Visual):
     QUAD_WHITE = (255, 255, 255) * 4
 
     def __init__(self, sim: simcx.Simulator, cell_size=20):
-        super(Grid2D, self).__init__(sim, sim.width * cell_size,
-                                     sim.height * cell_size)
+        super(Grid2D, self).__init__(sim, width=sim.width * cell_size,
+                                     height=sim.height * cell_size)
 
         self._grid_width = sim.width
         self._grid_height = sim.height
