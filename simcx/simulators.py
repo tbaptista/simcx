@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015-2016 Tiago Baptista
+# Copyright (c) 2015-2017 Tiago Baptista
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,12 +19,16 @@
 This module provides several ready-made simulator classes. Used mainly for the
 examples given in the Complex Systems course. In this current version, these
 should *not* be considered stable in terms of API.
-
 """
 
 from __future__ import division
 from simcx import Simulator
 import numpy as np
+try:
+    import numexpr as ne
+    USE_NE = True
+except ImportError:
+    USE_NE = False
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -140,7 +144,7 @@ class IFS(Simulator):
 
 class JuliaSet(Simulator):
     """A simulator to calculate the Julia Set of a function in the form
-    f(z) = z^2 + c. The simulator will compute de filled Julia Set for the
+    f(z) = z^2 + c. The simulator will compute de full Julia Set for the
     given range (min_x, min_y) to (max_x, max_y) on creation of the instance."""
 
     def __init__(self, c, min_x=-2, max_x=2, min_y=-2, max_y=2, samples=500,
@@ -155,16 +159,16 @@ class JuliaSet(Simulator):
         self._samples = samples
         self._iterations = iterations
 
-        self._data = self._compute()
-        self.draw_points = [[x, y] for x, y, count in self._data
-                            if count == iterations]
+        if USE_NE:
+            self.data = self._compute_ne()
+        else:
+            self.data = self._compute()
 
     def step(self, delta=0):
         pass
 
     def _compute(self):
-        r = max(2, abs(self._c))
-        r2 = r*r
+        r2 = max(2, abs(self._c))**2
         xs = np.linspace(self._min_x, self._max_x, self._samples)
         ys = np.linspace(self._min_y, self._max_y, self._samples)
 
@@ -181,3 +185,20 @@ class JuliaSet(Simulator):
                 data.append((x, y, count))
 
         return data
+
+    def _compute_ne(self):
+        r2 = max(2, abs(self._c))**2
+        c = self._c
+
+        x = np.linspace(self._min_x, self._max_x, self._samples, dtype=np.float32)
+        y = np.linspace(self._min_y, self._max_y, self._samples, dtype=np.float32)
+        z = x + y[:,None] * 1j
+        n = np.zeros(z.shape, dtype=int)
+
+        for i in range(self._iterations):
+            not_diverged = ne.evaluate('z.real*z.real + z.imag*z.imag < r2')
+            n[not_diverged] = i
+            z = ne.evaluate('where(not_diverged,z**2 + c,z)')
+
+        return n
+
