@@ -7,10 +7,13 @@ SimCX -- Simulator for Complex Systems
 
 Simulator for Complex Systems. Developed for the course in Complex Systems from
 the Department of Informatics Engineering of the University of Coimbra. This
-software is still in beta stage. Tutorials and documentation are currently in
-preparation, and should be finished soon.
+software is still in beta stage. Tutorials and documentation are available, but
+are still in development (check link above).
 
-| Copyright (c) 2015-2016 Tiago Baptista - baptista@dei.uc.pt
+Note that due to its main purpose (education), most of the code is written with
+a focus on readability, rather than performance.
+
+| Copyright (c) 2015-2017 Tiago Baptista - baptista@dei.uc.pt
 | Licensed under the Apache License, Version 2.0 (see LICENSE.txt)
 
 Dependencies
@@ -19,14 +22,12 @@ Dependencies
 - pyglet (http://www.pyglet.org)
 - matplotlib (http://www.matplotlib.org)
 - numpy (http://www.numpy.org)
-- pyafai (https://github.com/tbaptista/pyafai) (optional)
+- pyafai (https://github.com/tbaptista/pyafai)
+- numexpr (https://github.com/pydata/numexpr) (optional)
 
 Main Authors
 ------------
 | Tiago Baptista
 | Ernesto Costa
-
-
-
 
 
