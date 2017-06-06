@@ -144,7 +144,7 @@ class IFS(Simulator):
 
 class JuliaSet(Simulator):
     """A simulator to calculate the Julia Set of a function in the form
-    f(z) = z^2 + c. The simulator will compute the Julia Set for the
+    :math:`f(z) = z^2 + c`. The simulator will compute the Julia Set for the
     given range (min_x, min_y) to (max_x, max_y) on creation of the instance.
 
     Note: numexpr optimized version inspired by code by `Jean-François Puget
