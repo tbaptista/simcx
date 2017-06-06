@@ -144,8 +144,11 @@ class IFS(Simulator):
 
 class JuliaSet(Simulator):
     """A simulator to calculate the Julia Set of a function in the form
-    f(z) = z^2 + c. The simulator will compute de full Julia Set for the
-    given range (min_x, min_y) to (max_x, max_y) on creation of the instance."""
+    f(z) = z^2 + c. The simulator will compute the Julia Set for the
+    given range (min_x, min_y) to (max_x, max_y) on creation of the instance.
+
+    Note: numexpr optimized version inspired by code by Jean-François Puget
+    <https://gist.github.com/jfpuget/60e07a82dece69b011bb>`_"""
 
     def __init__(self, c, min_x=-2, max_x=2, min_y=-2, max_y=2, samples=500,
                  iterations=100):
