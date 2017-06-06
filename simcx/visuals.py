@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015-2016 Tiago Baptista
+# Copyright (c) 2015-2017 Tiago Baptista
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ from __future__ import division
 from . import MplVisual, Simulator, Visual
 from .simulators import FunctionIterator, FunctionIterator2D, FinalStateIterator
 import numpy as np
-from matplotlib.transforms import Affine2D
 import pyglet
+import matplotlib as mpl
 
 __docformat__ = 'restructuredtext'
 __author__ = 'Tiago Baptista'
@@ -190,3 +190,14 @@ class Points2D(Visual):
         pyglet.gl.glTranslatef(self._translate_x, self._translate_y, 0.)
         self._batch.draw()
         pyglet.gl.glPopMatrix()
+
+
+class FractalVisual(MplVisual):
+    def __init__(self, sim, gamma=1.0, **kwargs):
+        super(FractalVisual, self).__init__(sim, **kwargs)
+
+        norm = mpl.colors.PowerNorm(gamma)
+
+        self.figure.figimage(self.sim.data, cmap=kwargs.get('cmap', 'hot'),
+                             norm=norm)
+
