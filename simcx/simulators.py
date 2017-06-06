@@ -175,6 +175,7 @@ class JuliaSet(Simulator):
         data = []
 
         for y in ys:
+            data.append([])
             for x in xs:
                 z = complex(x, y)
                 count = 0
@@ -182,9 +183,9 @@ class JuliaSet(Simulator):
                     z = z*z + self._c
                     count += 1
 
-                data.append((x, y, count))
+                data[-1].append(count)
 
-        return data
+        return np.array(data, dtype=int)
 
     def _compute_ne(self):
         r2 = max(2, abs(self._c))**2
