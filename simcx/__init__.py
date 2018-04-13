@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Copyright (c) 2015-2017 Tiago Baptista
+# Copyright (c) 2015-2018 Tiago Baptista
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib import animation
-from matplotlib import verbose
 import pyglet
 import os
 
@@ -316,8 +315,6 @@ class FFMpegWriter(animation.FFMpegWriter):
         The keyword arguments are not being used in the subclass.
         """
 
-        verbose.report('MovieWriter.grab_frame: Grabbing frame.',
-                       level='debug')
         try:
             image = pyglet.image.get_buffer_manager().get_color_buffer().get_image_data()
             self._frame_sink().write(image.get_data('RGBA',
@@ -325,9 +322,8 @@ class FFMpegWriter(animation.FFMpegWriter):
 
         except RuntimeError:
             out, err = self._proc.communicate()
-            verbose.report('MovieWriter -- Error '
-                           'running proc:\n%s\n%s' % (out,
-                                                      err), level='helpful')
+            print('MovieWriter -- Error ')
+            print('running proc:\n%s\n%s' % (out, err))
             raise
 
 
