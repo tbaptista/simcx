@@ -13,7 +13,7 @@ are still in development (check link above).
 Note that due to its main purpose (education), most of the code is written with
 a focus on readability, rather than performance.
 
-| Copyright (c) 2015-2017 Tiago Baptista - baptista@dei.uc.pt
+| Copyright (c) 2015-2023 Tiago Baptista - baptista@dei.uc.pt
 | Licensed under the Apache License, Version 2.0 (see LICENSE.txt)
 
 Dependencies

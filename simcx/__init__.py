@@ -90,14 +90,14 @@ class MplVisual(Visual):
     def _create_canvas(self):
         self.canvas = FigureCanvas(self.figure)
         data = StringIO()
-        self.canvas.print_raw(data, dpi=self.dpi)
+        self.canvas.print_raw(data)
         self.image = pyglet.image.ImageData(self.width, self.height,
                                             'RGBA', data.getvalue(),
                                             -4 * self.width)
 
     def update_image(self):
         data = StringIO()
-        self.canvas.print_raw(data, dpi=self.dpi)
+        self.canvas.print_raw(data)
         self.image.set_data('RGBA', -4 * self.width, data.getvalue())
 
 
@@ -136,8 +136,7 @@ class Display(pyglet_window):
 
         if multi_sampling:
             # Enable multi sampling if available on the hardware
-            platform = pyglet.window.get_platform()
-            display = platform.get_default_display()
+            display = pyglet.canvas.get_display()
             screen = display.get_default_screen()
             template = pyglet.gl.Config(sample_buffers=1, samples=4,
                                         double_buffer=True)
@@ -163,7 +162,7 @@ class Display(pyglet_window):
         self._visuals = []
         self._pos = []
 
-        self._fps_display = pyglet.clock.ClockDisplay()
+        self._fps_display = pyglet.window.FPSDisplay(window=self)
 
         pyglet.clock.schedule_interval(self._update, self._interval)
 
@@ -329,6 +328,7 @@ class FFMpegWriter(animation.FFMpegWriter):
 
 def run():
     pyglet.app.run()
+
 
 # import sub-modules
 from . import simulators

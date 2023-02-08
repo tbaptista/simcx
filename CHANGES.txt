@@ -1,3 +1,12 @@
+v1.0.0-rc-1, 2023-02-07
+    * Fix compatibility with pyglet 1.5
+    * Pin pyglet version to 1.5
+    * Fix compatibility with matplotlib 3.6
+
+v1.0.0-beta.22, 2018-04-13
+    * Fix compatibility with matplotlib 2.2.0
+    * Updates to Julia Set example
+
 v1.0.0-beta.21, 2017-02-07
     * Add reset method to simulators.FunctionIterator
     * Small code style changes
