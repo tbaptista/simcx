@@ -316,8 +316,8 @@ class FFMpegWriter(animation.FFMpegWriter):
 
         try:
             image = pyglet.image.get_buffer_manager().get_color_buffer().get_image_data()
-            self._frame_sink().write(image.get_data('RGBA',
-                                                    -4 * self.display.width))
+            self._proc.stdin.write(image.get_data('RGBA',
+                                                  -4 * self.display.width))
 
         except RuntimeError:
             out, err = self._proc.communicate()
