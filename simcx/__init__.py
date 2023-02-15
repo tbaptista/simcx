@@ -226,7 +226,7 @@ class Display(pyglet_window):
         elif symbol == pyglet.window.key.R:
             if pyglet.window.key.MOD_ALT & modifiers:
                 self.start_recording()
-            elif modifiers == 0:
+            else:
                 if self.paused:
                     self._reset_simulation()
 
