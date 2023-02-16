@@ -24,6 +24,7 @@ Dependencies
 - numpy (http://www.numpy.org)
 - pyafai (https://github.com/tbaptista/pyafai)
 - numexpr (https://github.com/pydata/numexpr) (optional)
+- ffmpeg (https://ffmpeg.org) (optional if using movie recording functionality)
 
 Main Authors
 ------------
